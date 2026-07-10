@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "cipher": "AES-GCM",
+  "kdf": {
+    "algo": "PBKDF2-HMAC-SHA256",
+    "iterations": 150000,
+    "salt": "nlRKQECxf9ZBgc2bISqL7A=="
+  },
+  "entries": [
+    {
+      "iv": "28MbENlyjku6c5Vq",
+      "data": "Ii9LJeHgJPb2IRUz6/yScmQW925NyUomG+Y49j/POUXsg0RNJIiz7g9cRuqAQqqe",
+      "label": "2026-07-10 #1"
+    }
+  ]
+}

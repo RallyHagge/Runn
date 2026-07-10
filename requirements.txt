@@ -1,0 +1,6 @@
+# Python-paket som scripts/prepare_chart.py behöver.
+# Installera med:  py -3 -m pip install -r requirements.txt
+pillow
+pyproj
+rasterio
+cryptography

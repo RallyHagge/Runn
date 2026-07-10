@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Sjökort Runn</title>
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+<div id="map"></div>
+
+<div id="login" class="login">
+  <form id="login-form" class="login-box" autocomplete="off">
+    <h1>Sjökort Runn</h1>
+    <p>Ange din köpkod för att öppna sjökortet.</p>
+    <input id="login-code" type="text" inputmode="latin" autocapitalize="characters"
+           spellcheck="false" placeholder="RUNN-XXXX-XXXX-XXXX" aria-label="Köpkod">
+    <button type="submit">Öppna kartan</button>
+    <div id="login-msg" class="login-msg"></div>
+    <p class="login-help">Koden köps av Runns Båtförbund och fungerar på alla dina enheter.</p>
+  </form>
+</div>
+
+<div id="status" class="status hidden"></div>
+
+<button id="locate-btn" class="locate-btn" title="Centrera på min position" aria-label="Centrera på min position">
+  <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2">
+    <circle cx="12" cy="12" r="3"></circle>
+    <path d="M12 2v3M12 19v3M2 12h3M19 12h3"></path>
+  </svg>
+</button>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="app.js?v=4"></script>
+</body>
+</html>

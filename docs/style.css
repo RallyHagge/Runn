@@ -1,0 +1,158 @@
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+  background: #cfe3ee;
+}
+
+.status {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  background: rgba(20, 20, 20, 0.85);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  max-width: 85vw;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.status.hidden {
+  display: none;
+}
+
+.status.error {
+  background: rgba(150, 30, 30, 0.9);
+}
+
+.locate-btn {
+  position: absolute;
+  right: 14px;
+  bottom: 30px;
+  z-index: 1000;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  color: #1a73e8;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.locate-btn:active {
+  background: #eee;
+}
+
+.locate-btn.active {
+  color: #fff;
+  background: #1a73e8;
+}
+
+/* Inloggning / köpkod */
+.login {
+  position: absolute;
+  inset: 0;
+  z-index: 2000;
+  background: #1b3a4b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.login.hidden {
+  display: none;
+}
+
+.login-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 340px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.login-box h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  color: #1b3a4b;
+}
+
+.login-box p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #444;
+}
+
+.login-box input {
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 18px;
+  letter-spacing: 1px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 12px;
+  border: 2px solid #ccd6db;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: #1a73e8;
+}
+
+.login-box button {
+  width: 100%;
+  font-size: 16px;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #1a73e8;
+  color: #fff;
+  cursor: pointer;
+}
+
+.login-box button:disabled {
+  background: #9bb8dd;
+  cursor: default;
+}
+
+.login-msg {
+  min-height: 18px;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #b00020;
+}
+
+.login-help {
+  margin: 14px 0 0 !important;
+  font-size: 12px !important;
+  color: #888 !important;
+}
+
+.me-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1a73e8;
+  border: 3px solid #fff;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
