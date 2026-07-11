@@ -117,14 +117,25 @@ Senast: 2026-07-11 (kväll).
   Inställningar) säger user agent "OS 18_7" — **Apple fryser versionen i
   UA:n**, så tech-radens OS-siffra är bara ungefärlig; Inställningar är
   facit.
-  **v18 = SLUTLÖSNING (deployad, väntar på slutbekräftelse):** webbsökning
-  bekräftade att `black-translucent` är **deprecated hos Apple** (märkt för
-  borttagning) → ingen fix att vänta på; på iOS 26.5 får man toppen ELLER
-  botten kant-i-kant, aldrig båda. Valet: statusfältsläge `black` (=v15-
-  läget, bevisat perfekt nederkant). Toppfältet får empiriskt kartans
-  vattenblå `#cfe3ee` (iOS tycks hämta färgen från #map:s bakgrund) och
-  smälter in. Device-height-injektionen borttagen ur app.js. Kräver en
-  sista ominstallation av hemskärms-appen.
+  **v18 BEKRÄFTAD för botten:** webbsökning bekräftade att
+  `black-translucent` är **deprecated hos Apple** (märkt för borttagning) →
+  ingen fix att vänta på; på iOS 26.5 får man toppen ELLER botten
+  kant-i-kant, aldrig båda. Valet: statusfältsläge `black` (=v15-läget).
+  Efter användarens ominstallation: **botten fungerar, toppen ljusblå**
+  (`#cfe3ee` = #map:s bakgrund — iOS hämtar färgen från sidans översta
+  element). Användaren tycker ljusblått uppe är fel. VIKTIGT LÄRT:
+  statusfälts-METAN kräver ominstallation, men v18-koden nådde appen via
+  vanlig omladdning (network-first-SW funkar).
+  **v19 (deployad, experiment):** `#statusbar-tint` — 1 px hög svart fast
+  list allra överst (z-index 3000, pointer-events none). Hypotes: iOS tar
+  statusfältsfärgen från sidans översta element → svart fält som smälter
+  ihop med notchen. Test: räcker force-quit + öppna igen (avgör samtidigt
+  om färgen läses live eller bakas vid installation — okänt); annars
+  ominstallation. Om fältet förblir ljusblått: iOS läser sannolikt #map:s
+  background-color (eller första målningen) — nästa drag är att ge #map
+  mörk bakgrund alt. gradient (mörk topp), med trade-off att vattnet
+  utanför kortkanten byter färg. Device-height-injektionen borttagen ur
+  app.js (v18).
   Falsifierade spår (testa ALDRIG om): negativ bottom med env(safe-area-
   inset-bottom) (v11); max(innerHeight, visualViewport) (v13 — båda ljuger,
   rapporterar 797); min-height = screen.height (v14 — iOS klipper webbvyn

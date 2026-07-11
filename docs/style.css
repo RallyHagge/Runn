@@ -4,6 +4,19 @@
   --sab: env(safe-area-inset-bottom, 0px);
 }
 
+/* 1 px hög list allra överst — styr (förhoppningsvis) statusfältets färg i
+   iOS helskärmsläge, se kommentar i index.html. Osynlig i praktiken. */
+#statusbar-tint {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #000;
+  z-index: 3000;
+  pointer-events: none;
+}
+
 html, body {
   margin: 0;
   height: 100%;

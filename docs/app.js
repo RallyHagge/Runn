@@ -16,7 +16,7 @@
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "18";
+  var APP_VERSION = "19";
 
   var IS_IOS =
     /iphone|ipad|ipod/i.test(navigator.userAgent || "") ||
