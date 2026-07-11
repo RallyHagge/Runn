@@ -8,15 +8,10 @@ html, body {
 }
 
 #map {
-  /* Fäst kartan mot kanterna. I helskärmsläge reserverar iOS en remsa vid
-     hemindikatorn längst ner som annars blir vit; genom att dra nederkanten
-     förbi "safe area"-linjen (negativ bottom) fyller kartrutorna hela vägen
-     ner. I vanliga Safari är insetet 0, så inget påverkas där. */
+  /* Fäst kartan mot alla fyra kanter. Med korrekt helskärmsläge
+     (viewport-fit=cover) fyller den då hela skärmen kant till kant. */
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: calc(0px - env(safe-area-inset-bottom, 0px));
+  inset: 0;
   background: #cfe3ee;
 }
 
@@ -114,10 +109,7 @@ html, body {
 /* Inloggning / köpkod */
 .login {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: calc(0px - env(safe-area-inset-bottom, 0px));
+  inset: 0;
   z-index: 2000;
   background: linear-gradient(rgba(18, 42, 56, 0.55), rgba(18, 42, 56, 0.72)),
     url("img/login-bg.jpg?v=7") center / cover no-repeat;

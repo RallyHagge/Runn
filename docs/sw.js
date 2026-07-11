@@ -11,7 +11,7 @@
  * uppdateras (prepare_chart.py) får manifestet en ny version och rutorna laddas
  * om automatiskt. Inget behöver ändras här vid en kartuppdatering.
  */
-var SHELL_CACHE = "runn-shell-v1";
+var SHELL_CACHE = "runn-shell-v2";
 var TILES_CACHE = "runn-tiles-v1";
 
 var SHELL_ASSETS = [
@@ -92,8 +92,14 @@ async function networkFirst(request) {
     }
     return resp;
   } catch (e) {
-    var cached = await caches.match(request, { ignoreSearch: true });
+    // Exakt match först (t.ex. app.js?v=11) så att versioner aldrig blandas.
+    var cached = await caches.match(request);
     if (cached) return cached;
+    // Navigering offline → fall tillbaka till startsidan.
+    if (request.mode === "navigate") {
+      var index = await caches.match("index.html");
+      if (index) return index;
+    }
     return new Response("", { status: 504 });
   }
 }

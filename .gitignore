@@ -2,3 +2,6 @@ source/
 __pycache__/
 *.pyc
 .claude/
+node_modules/
+package.json
+package-lock.json
