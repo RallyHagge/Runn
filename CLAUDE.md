@@ -114,8 +114,9 @@ Senast: 2026-07-12.
   iOS helskärm (se invariants-sektionen ovan; bekräftad av användaren på
   riktig iPhone: svart statusfält uppe, kartan ända ner i botten).
 - Två testkoder i drift (en generisk, en till Peter Eriksson). Se
-  `source/issued_codes.csv` för klartext. Ta bort testkoder ur
-  `docs/access/codes.json` före skarp försäljning.
+  `source/issued_codes.csv` för klartext. **Användarens beslut 2026-07-12:
+  koderna får ligga kvar permanent** — ta INTE bort dem ur
+  `docs/access/codes.json`.
 - Mail till Peter Eriksson är skickat (2026-07-11).
 
 <!-- Skriv ALDRIG köpkoder i klartext här (filen är publik i repot). -->
