@@ -205,6 +205,13 @@
 
     startWatching();
     maybePrecache();
+
+    // Se till att Leaflet fyller hela ytan efter layout/rotation.
+    setTimeout(function () { map.invalidateSize(); }, 300);
+    window.addEventListener("resize", function () { map.invalidateSize(); });
+    window.addEventListener("orientationchange", function () {
+      setTimeout(function () { map.invalidateSize(); }, 300);
+    });
   }
 
   // --- Offline: ladda ner hela sjökortet via service workern ---
