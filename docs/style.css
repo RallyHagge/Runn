@@ -10,6 +10,22 @@ html, body {
   background: #cfe3ee;
 }
 
+/* I helskärmsläge (app från hemskärmen) ligger innehållet under iOS statusfält
+   och notch. Skjut in Leaflets kontroller med "safe area"-marginalerna så att
+   zoom-knappen och lagerväljaren inte hamnar under klockan/batteriet. I Safari
+   är dessa värden 0, så vanligt webbläsarläge påverkas inte. */
+.leaflet-top {
+  top: env(safe-area-inset-top, 0px);
+}
+
+.leaflet-left {
+  left: env(safe-area-inset-left, 0px);
+}
+
+.leaflet-right {
+  right: env(safe-area-inset-right, 0px);
+}
+
 .status {
   position: absolute;
   top: 12px;
