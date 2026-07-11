@@ -83,20 +83,29 @@ starta `py -3 -m http.server` i `docs/`, kör ett litet Playwright-skript mot
 renderas allt korrekt; iOS-specifika saker (safe-area/helskärm) syns inte där.
 
 ## Status (uppdatera denna sektion löpande)
-Senast: 2026-07-11.
+Senast: 2026-07-11 (kväll).
 - Klart & live: karta, exakt inpassning, GPS, lagerväljare (Sjökort/Satellit,
   Esri World Imagery), kodskydd, hjälp-ruta, app-ikon, offline, köplänk.
-- **Öppen punkt:** iOS helskärmsläge. Vit/ljusblå remsa i nederkant och en
-  försvunnen lagerväljare rapporterades — verifierat att koden är korrekt i
-  Chromium; misstänkt orsak = gammal hemskärms-instans + trasslig cache.
-  Backade experimentella layouthack (v12), härdade sw.js mot versionsblandning.
-  **Väntar på att användaren ominstallerar hemskärms-appen (ta bort + lägg till
-  på nytt) och rapporterar om topp/botten och lagerväljaren blev bra.** Om kvar:
-  be om iOS-version + telefonmodell.
+- **Öppen punkt:** iOS helskärmsläge — ljusblå remsa i nederkant. Ominstallation
+  av hemskärms-appen hjälpte INTE → äkta layoutfel, inte cache. Den ljusblå
+  färgen var vår egen `#cfe3ee` (både body och #map hade den, så remsan gick
+  inte att härleda). v13 deployad med tre saker:
+  1. Body-bakgrund bytt till mörk marinblå `#17384a` som diagnostik — blir
+     remsan MÖRK når sidan/kartelementet inte ner (viewport-bugg); förblir den
+     LJUSBLÅ når #map ner men Leaflet ritar inga rutor där (storleksfel →
+     invalidateSize-spår).
+  2. Höjdfix: app.js sätter `--app-min-h` = max(innerHeight,
+     visualViewport.height); #map/.login har `min-height: var(--app-min-h)`.
+     OBS: sätts bara när höjden > 0 (0-höjd före första layout sågs i test).
+  3. Teknisk info-rad i hjälprutan (`#help-tech`): version + fönster/synligt/
+     skärm-mått + safe-area-botten. **Be användaren öppna ?-rutan på iPhonen
+     och läsa upp raden** — visar både att v13 kör och var höjden försvinner.
+  Tidigare falsifierat: negativ bottom med env(safe-area-inset-bottom) (v11,
+  hjälpte inte — troligen rapporteras insetet som 0 i det trasiga läget).
 - Två testkoder i drift (en generisk, en till Peter Eriksson). Se
   `source/issued_codes.csv` för klartext. Ta bort testkoder ur
   `docs/access/codes.json` före skarp försäljning.
-- Mailutkast till Peter Eriksson finns (i chatten) — ej skickat.
+- Mail till Peter Eriksson är skickat (2026-07-11).
 
 <!-- Skriv ALDRIG köpkoder i klartext här (filen är publik i repot). -->
 

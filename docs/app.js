@@ -14,6 +14,32 @@
     statusEl.classList.add("hidden");
   }
 
+  // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
+  // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
+  var APP_VERSION = "13";
+
+  // --- iOS helskärm: kompensera för att layout-viewporten ibland rapporteras
+  // lägre än den synliga ytan (ger en tom remsa i nederkant). Sätt en CSS-
+  // variabel med den verkliga höjden; #map/.login använder den som min-höjd.
+  function updateAppHeight() {
+    var h = window.innerHeight;
+    if (window.visualViewport && window.visualViewport.height > h) {
+      h = window.visualViewport.height;
+    }
+    // Före första layouten kan höjden vara 0 – sätt inget då, låt CSS-
+    // fallbacken (100%) gälla och mät om vid load/resize.
+    if (h > 0) {
+      document.documentElement.style.setProperty("--app-min-h", Math.ceil(h) + "px");
+    }
+  }
+  updateAppHeight();
+  window.addEventListener("load", updateAppHeight);
+  setTimeout(updateAppHeight, 300);
+  window.addEventListener("resize", updateAppHeight);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", updateAppHeight);
+  }
+
   // ---------------------------------------------------------------------------
   // Kryptering / köpkod
   //
@@ -212,6 +238,11 @@
     window.addEventListener("orientationchange", function () {
       setTimeout(function () { map.invalidateSize(); }, 300);
     });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", function () {
+        setTimeout(function () { map.invalidateSize(); }, 50);
+      });
+    }
   }
 
   // --- Offline: ladda ner hela sjökortet via service workern ---
@@ -374,7 +405,27 @@
     if (isIOS && !isAndroid) androidSteps.style.display = "none";
     if (isAndroid && !isIOS) iosSteps.style.display = "none";
 
+    var helpTech = document.getElementById("help-tech");
+
     function openHelp() {
+      // Teknisk info för felsökning (särskilt iOS-helskärmsremsan).
+      if (helpTech) {
+        var vv = window.visualViewport;
+        var standalone =
+          navigator.standalone === true ||
+          (window.matchMedia &&
+            window.matchMedia("(display-mode: standalone)").matches);
+        var sab = getComputedStyle(document.documentElement)
+          .getPropertyValue("--sab")
+          .trim();
+        helpTech.textContent =
+          "v" + APP_VERSION +
+          " · helskärm " + (standalone ? "ja" : "nej") +
+          " · fönster " + window.innerWidth + "×" + window.innerHeight +
+          (vv ? " · synligt " + Math.round(vv.width) + "×" + Math.round(vv.height) : "") +
+          " · skärm " + screen.width + "×" + screen.height +
+          " · safe-botten " + (sab || "0px");
+      }
       helpOverlay.classList.remove("hidden");
     }
     function closeHelp() {
