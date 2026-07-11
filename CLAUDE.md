@@ -101,18 +101,25 @@ Senast: 2026-07-11 (kväll).
   Webbvyn är alltså (skärm − statusfält) hög men placerad vid y=0 (innehållet
   låg under klockan) — buggen är kopplad till statusfältsläget
   `black-translucent`.
-  **v15 (deployad, väntar på användartest):** bytt
-  `apple-mobile-web-app-status-bar-style` från `black-translucent` till
-  `black` → webbvyn ska placeras UNDER statusfältet och nå skärmens botten.
-  Kartan går inte längre under klockan (snarare en förbättring). Skärmhöjds-
-  stretchen från v14 borttagen (skulle bli fel i nya läget). Metataggen läses
-  när appen läggs på hemskärmen → **kräver att användaren tar bort och lägger
-  till hemskärms-appen på nytt.** Om remsan ändå är kvar: be om iOS-version
-  (Inställningar → Allmänt → Om) — kan vara versionsspecifik iOS-bugg.
+  **v15 FUNGERADE för nederkanten:** med `apple-mobile-web-app-status-bar-
+  style: black` placeras vyn under statusfältet och kartan når skärmens
+  botten (skärmdump bekräftar, attribution synlig). MEN: överkanten fick ett
+  ljusblått fält bakom klockan — exakt `#cfe3ee` = #map:s bakgrundsfärg, dvs
+  iOS tycks hämta statusfältets färg från sidan (inte svart som begärt).
+  Användaren vill ha kartan ända ut även upptill.
+  **v16 (deployad, väntar på användartest):** tillbaka till
+  `black-translucent` (karta under klockan) + den KLASSISKA motmedicinen mot
+  47-pt-felet: app.js lägger till `height=device-height` i viewport-taggen,
+  enbart när iOS + helskärm (vanliga webbläsare orörda). Om det fungerar ska
+  tech-raden visa **fönster 390×844** och kartan fylla hela skärmen. Kräver
+  ominstallation av hemskärms-appen (statusfälts-metan läses vid Lägg till).
+  Om v16 fallerar: fall tillbaka till v15-läget (svart statusfält, funkade)
+  och styla toppfältet snyggt i stället. **iOS-version fortfarande inte
+  inhämtad — fråga igen.**
   Tidigare falsifierat: negativ bottom med env(safe-area-inset-bottom) (v11 —
   insetet rapporteras men positioneringen utgår från den korta viewporten);
   max(innerHeight, visualViewport) (v13 — båda rapporterar 797); min-height =
-  screen.height (v14 — webbvyn klipps fysiskt).
+  screen.height (v14 — innehåll under 797-linjen renderas aldrig).
 - Två testkoder i drift (en generisk, en till Peter Eriksson). Se
   `source/issued_codes.csv` för klartext. Ta bort testkoder ur
   `docs/access/codes.json` före skarp försäljning.
