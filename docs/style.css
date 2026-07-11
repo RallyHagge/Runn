@@ -5,8 +5,11 @@ html, body {
 }
 
 #map {
-  height: 100%;
-  width: 100%;
+  /* Fäst kartan mot alla fyra kanter. Med height:100% lämnade iOS i
+     helskärmsläge en vit remsa längst ner (hemindikator-området); position:
+     fixed + inset:0 gör att kartan alltid täcker hela skärmen, kant till kant. */
+  position: fixed;
+  inset: 0;
   background: #cfe3ee;
 }
 
