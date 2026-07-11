@@ -94,17 +94,25 @@ Senast: 2026-07-11 (kväll).
   överkant men gör layout-viewporten exakt statusfältshöjden (47 pt) för
   kort** → nedersta 47 pt blir bar sidbakgrund. Både innerHeight och
   visualViewport ljuger; screen.height är sann.
-  **v14 (deployad, väntar på användartest):** i `updateAppHeight()` — om iOS +
-  helskärm och skärmhöjden är ≤80 px större än rapporterad höjd, sätt
-  `--app-min-h` till skärmhöjden (portrait = max(screen.w,h)). #map/.login
-  har `min-height: var(--app-min-h)`. `overflow: hidden` på html/body så
-  utdragen .login inte ger 47 px gummibandsskroll. Tech-raden i ?-rutan visar
-  nu även `min-h` — **på telefonen ska den visa `min-h 844px` och remsan vara
-  borta.** Om remsan är kvar trots min-h 844: då klipper iOS webbvyn på
-  riktigt, och vi behöver iOS-version (Inställningar → Allmänt → Om).
+  **v14 FALSIFIERAD:** min-h 844px applicerades (tech-raden bekräftade) men
+  remsan bestod, och Leaflet-attributionen (kartans nederkant) försvann ur
+  bild → **iOS klipper webbvyn fysiskt vid 797 pt**; innehåll under linjen
+  renderas aldrig, iOS fyller de nedersta 47 pt med sidans bakgrundsfärg.
+  Webbvyn är alltså (skärm − statusfält) hög men placerad vid y=0 (innehållet
+  låg under klockan) — buggen är kopplad till statusfältsläget
+  `black-translucent`.
+  **v15 (deployad, väntar på användartest):** bytt
+  `apple-mobile-web-app-status-bar-style` från `black-translucent` till
+  `black` → webbvyn ska placeras UNDER statusfältet och nå skärmens botten.
+  Kartan går inte längre under klockan (snarare en förbättring). Skärmhöjds-
+  stretchen från v14 borttagen (skulle bli fel i nya läget). Metataggen läses
+  när appen läggs på hemskärmen → **kräver att användaren tar bort och lägger
+  till hemskärms-appen på nytt.** Om remsan ändå är kvar: be om iOS-version
+  (Inställningar → Allmänt → Om) — kan vara versionsspecifik iOS-bugg.
   Tidigare falsifierat: negativ bottom med env(safe-area-inset-bottom) (v11 —
   insetet rapporteras men positioneringen utgår från den korta viewporten);
-  max(innerHeight, visualViewport) (v13 — båda rapporterar 797).
+  max(innerHeight, visualViewport) (v13 — båda rapporterar 797); min-height =
+  screen.height (v14 — webbvyn klipps fysiskt).
 - Två testkoder i drift (en generisk, en till Peter Eriksson). Se
   `source/issued_codes.csv` för klartext. Ta bort testkoder ur
   `docs/access/codes.json` före skarp försäljning.

@@ -16,7 +16,7 @@
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "14";
+  var APP_VERSION = "15";
 
   var IS_IOS =
     /iphone|ipad|ipod/i.test(navigator.userAgent || "") ||
@@ -38,21 +38,9 @@
     if (window.visualViewport && window.visualViewport.height > h) {
       h = window.visualViewport.height;
     }
-    // iOS-helskärmsbugg (uppmätt på riktig iPhone, se CLAUDE.md): layout-
-    // viewporten görs exakt statusfältets höjd (47 px) för kort trots att
-    // innehållet ritas över hela skärmen → tom remsa i botten. Både
-    // innerHeight och visualViewport ljuger, men skärmhöjden är sann — dra ut
-    // till den när skillnaden är rimligt liten. Bara iOS + helskärm: i vanliga
-    // webbläsare är skillnaden legitim (adressfält, Androids systemfält).
-    if (IS_IOS && isStandalone() && window.screen) {
-      var portrait =
-        !window.matchMedia ||
-        window.matchMedia("(orientation: portrait)").matches;
-      var target = portrait
-        ? Math.max(screen.width, screen.height)
-        : Math.min(screen.width, screen.height);
-      if (target > h && target - h <= 80) h = target;
-    }
+    // OBS: dra INTE ut till screen.height (testat i v14, se CLAUDE.md):
+    // iOS klipper webbvyn fysiskt vid den rapporterade höjden, så innehåll
+    // under den linjen visas aldrig — det gömde bara attributionstexten.
     // Före första layouten kan höjden vara 0 – sätt inget då, låt CSS-
     // fallbacken (100%) gälla och mät om vid load/resize.
     if (h > 0) {

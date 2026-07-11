@@ -6,14 +6,19 @@
 <title>Sjökort Runn</title>
 <meta name="theme-color" content="#17384a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- OBS: INTE black-translucent. Det lät kartan gå under klockan, men en
+     iOS-bugg gör då webbvyn statusfältshöjden (47 pt) för kort och klipper
+     bort skärmens nedersta 47 pt (verifierat på riktig iPhone, se CLAUDE.md).
+     Med "black" placeras vyn under statusfältet och når skärmens botten.
+     Värdet läses när appen läggs på hemskärmen - kräver ominstallation. -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Sjökort Runn">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=5">
 <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png?v=5">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=5">
 <link rel="manifest" href="manifest.webmanifest?v=7">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="style.css?v=14">
+<link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
 <div id="map"></div>
@@ -80,6 +85,6 @@
 </div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
-<script src="app.js?v=14"></script>
+<script src="app.js?v=15"></script>
 </body>
 </html>
