@@ -16,7 +16,19 @@
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "13";
+  var APP_VERSION = "14";
+
+  var IS_IOS =
+    /iphone|ipad|ipod/i.test(navigator.userAgent || "") ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+  function isStandalone() {
+    return (
+      navigator.standalone === true ||
+      (window.matchMedia &&
+        window.matchMedia("(display-mode: standalone)").matches)
+    );
+  }
 
   // --- iOS helskärm: kompensera för att layout-viewporten ibland rapporteras
   // lägre än den synliga ytan (ger en tom remsa i nederkant). Sätt en CSS-
@@ -25,6 +37,21 @@
     var h = window.innerHeight;
     if (window.visualViewport && window.visualViewport.height > h) {
       h = window.visualViewport.height;
+    }
+    // iOS-helskärmsbugg (uppmätt på riktig iPhone, se CLAUDE.md): layout-
+    // viewporten görs exakt statusfältets höjd (47 px) för kort trots att
+    // innehållet ritas över hela skärmen → tom remsa i botten. Både
+    // innerHeight och visualViewport ljuger, men skärmhöjden är sann — dra ut
+    // till den när skillnaden är rimligt liten. Bara iOS + helskärm: i vanliga
+    // webbläsare är skillnaden legitim (adressfält, Androids systemfält).
+    if (IS_IOS && isStandalone() && window.screen) {
+      var portrait =
+        !window.matchMedia ||
+        window.matchMedia("(orientation: portrait)").matches;
+      var target = portrait
+        ? Math.max(screen.width, screen.height)
+        : Math.min(screen.width, screen.height);
+      if (target > h && target - h <= 80) h = target;
     }
     // Före första layouten kan höjden vara 0 – sätt inget då, låt CSS-
     // fallbacken (100%) gälla och mät om vid load/resize.
@@ -397,13 +424,9 @@
     var androidSteps = document.getElementById("help-android");
 
     // Visa bara instruktionen för besökarens plattform (båda om okänd).
-    var ua = navigator.userAgent || "";
-    var isIOS =
-      /iphone|ipad|ipod/i.test(ua) ||
-      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-    var isAndroid = /android/i.test(ua);
-    if (isIOS && !isAndroid) androidSteps.style.display = "none";
-    if (isAndroid && !isIOS) iosSteps.style.display = "none";
+    var isAndroid = /android/i.test(navigator.userAgent || "");
+    if (IS_IOS && !isAndroid) androidSteps.style.display = "none";
+    if (isAndroid && !IS_IOS) iosSteps.style.display = "none";
 
     var helpTech = document.getElementById("help-tech");
 
@@ -411,20 +434,18 @@
       // Teknisk info för felsökning (särskilt iOS-helskärmsremsan).
       if (helpTech) {
         var vv = window.visualViewport;
-        var standalone =
-          navigator.standalone === true ||
-          (window.matchMedia &&
-            window.matchMedia("(display-mode: standalone)").matches);
         var sab = getComputedStyle(document.documentElement)
           .getPropertyValue("--sab")
           .trim();
+        var minH = document.documentElement.style.getPropertyValue("--app-min-h");
         helpTech.textContent =
           "v" + APP_VERSION +
-          " · helskärm " + (standalone ? "ja" : "nej") +
+          " · helskärm " + (isStandalone() ? "ja" : "nej") +
           " · fönster " + window.innerWidth + "×" + window.innerHeight +
           (vv ? " · synligt " + Math.round(vv.width) + "×" + Math.round(vv.height) : "") +
           " · skärm " + screen.width + "×" + screen.height +
-          " · safe-botten " + (sab || "0px");
+          " · safe-botten " + (sab || "0px") +
+          " · min-h " + (minH || "–");
       }
       helpOverlay.classList.remove("hidden");
     }

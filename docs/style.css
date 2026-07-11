@@ -7,6 +7,9 @@
 html, body {
   margin: 0;
   height: 100%;
+  /* Sidan i sig ska aldrig skrolla (allt är kart-/overlay-ytor). Hindrar
+     också gummibandsskroll när .login dras ut av --app-min-h på iOS. */
+  overflow: hidden;
   /* Mörk marinblå (temafärgen). Syns bara om kartan inte täcker hela skärmen.
      Medvetet en ANNAN färg än kartans vattenblå (#cfe3ee): blir en remsa mörk
      är det sidan/viewporten som inte når ner, förblir den ljusblå är det

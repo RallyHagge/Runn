@@ -86,22 +86,25 @@ renderas allt korrekt; iOS-specifika saker (safe-area/helskärm) syns inte där.
 Senast: 2026-07-11 (kväll).
 - Klart & live: karta, exakt inpassning, GPS, lagerväljare (Sjökort/Satellit,
   Esri World Imagery), kodskydd, hjälp-ruta, app-ikon, offline, köplänk.
-- **Öppen punkt:** iOS helskärmsläge — ljusblå remsa i nederkant. Ominstallation
-  av hemskärms-appen hjälpte INTE → äkta layoutfel, inte cache. Den ljusblå
-  färgen var vår egen `#cfe3ee` (både body och #map hade den, så remsan gick
-  inte att härleda). v13 deployad med tre saker:
-  1. Body-bakgrund bytt till mörk marinblå `#17384a` som diagnostik — blir
-     remsan MÖRK når sidan/kartelementet inte ner (viewport-bugg); förblir den
-     LJUSBLÅ når #map ner men Leaflet ritar inga rutor där (storleksfel →
-     invalidateSize-spår).
-  2. Höjdfix: app.js sätter `--app-min-h` = max(innerHeight,
-     visualViewport.height); #map/.login har `min-height: var(--app-min-h)`.
-     OBS: sätts bara när höjden > 0 (0-höjd före första layout sågs i test).
-  3. Teknisk info-rad i hjälprutan (`#help-tech`): version + fönster/synligt/
-     skärm-mått + safe-area-botten. **Be användaren öppna ?-rutan på iPhonen
-     och läsa upp raden** — visar både att v13 kör och var höjden försvinner.
-  Tidigare falsifierat: negativ bottom med env(safe-area-inset-bottom) (v11,
-  hjälpte inte — troligen rapporteras insetet som 0 i det trasiga läget).
+- **Öppen punkt:** iOS helskärmsläge — remsa i nederkant. ORSAK DIAGNOSTISERAD
+  med v13:s diagnostik (mörk body-bakgrund + teknisk info-rad i ?-rutan):
+  användarens iPhone (390×844) rapporterade `fönster 390×797, synligt 390×797,
+  skärm 390×844, safe-botten 34px` och remsan blev MÖRK + skärmdump visar
+  kartan ända upp under klockan. Alltså: **iOS ankrar innehållet i skärmens
+  överkant men gör layout-viewporten exakt statusfältshöjden (47 pt) för
+  kort** → nedersta 47 pt blir bar sidbakgrund. Både innerHeight och
+  visualViewport ljuger; screen.height är sann.
+  **v14 (deployad, väntar på användartest):** i `updateAppHeight()` — om iOS +
+  helskärm och skärmhöjden är ≤80 px större än rapporterad höjd, sätt
+  `--app-min-h` till skärmhöjden (portrait = max(screen.w,h)). #map/.login
+  har `min-height: var(--app-min-h)`. `overflow: hidden` på html/body så
+  utdragen .login inte ger 47 px gummibandsskroll. Tech-raden i ?-rutan visar
+  nu även `min-h` — **på telefonen ska den visa `min-h 844px` och remsan vara
+  borta.** Om remsan är kvar trots min-h 844: då klipper iOS webbvyn på
+  riktigt, och vi behöver iOS-version (Inställningar → Allmänt → Om).
+  Tidigare falsifierat: negativ bottom med env(safe-area-inset-bottom) (v11 —
+  insetet rapporteras men positioneringen utgår från den korta viewporten);
+  max(innerHeight, visualViewport) (v13 — båda rapporterar 797).
 - Två testkoder i drift (en generisk, en till Peter Eriksson). Se
   `source/issued_codes.csv` för klartext. Ta bort testkoder ur
   `docs/access/codes.json` före skarp försäljning.
