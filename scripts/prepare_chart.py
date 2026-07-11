@@ -29,6 +29,7 @@ import shutil
 import sys
 import tempfile
 import zipfile
+from datetime import datetime, timezone
 from pathlib import Path
 
 from PIL import Image
@@ -248,6 +249,8 @@ def generate_tiles(img, src_transform, epsg, encrypt=False):
     tiles_root = OUT_DIR / "tiles"
     if tiles_root.exists():
         shutil.rmtree(tiles_root)
+    ext = "bin" if encrypt else "jpg"
+    manifest_tiles = []  # webbrelativa sökvägar för service workerns offline-cache
 
     tmp_dir = Path(tempfile.mkdtemp(prefix="chart_tiles_"))
     src_tif = tmp_dir / "src.tif"
@@ -300,6 +303,7 @@ def generate_tiles(img, src_transform, epsg, encrypt=False):
                             )
                         else:
                             (tile_dir / f"{ty}.jpg").write_bytes(buf.getvalue())
+                        manifest_tiles.append(f"chart/tiles/{z}/{tx}/{ty}.{ext}")
                         z_count += 1
                 total += z_count
                 print(f"  z{z}: {z_count} rutor")
@@ -310,6 +314,16 @@ def generate_tiles(img, src_transform, epsg, encrypt=False):
     size_mb = sum(f.stat().st_size for f in tiles_root.rglob(pattern)) / (1024 * 1024)
     kind = "krypterade rutor (.bin)" if encrypt else "rutor (.jpg)"
     print(f"Skrev {total} {kind} till {tiles_root} ({size_mb:.1f} MB)")
+
+    # Manifest för service workern (offline): lista över rutor + versionsstämpel.
+    # Ny version vid varje körning gör att en uppdaterad karta laddas om offline.
+    version = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+    manifest_path = OUT_DIR / "tiles-manifest.json"
+    manifest_path.write_text(
+        json.dumps({"version": version, "count": len(manifest_tiles), "tiles": manifest_tiles}),
+        encoding="utf-8",
+    )
+    print(f"Skrev {manifest_path} (version {version})")
     return south, west, north, east
 
 

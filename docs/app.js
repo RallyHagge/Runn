@@ -204,6 +204,49 @@
       });
 
     startWatching();
+    maybePrecache();
+  }
+
+  // --- Offline: ladda ner hela sjökortet via service workern ---
+
+  var offlineEl = document.getElementById("offline-status");
+  var offlineHideTimer = null;
+
+  function showOffline(text, done) {
+    if (!offlineEl) return;
+    offlineEl.textContent = text;
+    offlineEl.classList.remove("hidden");
+    offlineEl.classList.toggle("done", !!done);
+    if (offlineHideTimer) clearTimeout(offlineHideTimer);
+    if (done) {
+      offlineHideTimer = setTimeout(function () {
+        offlineEl.classList.add("hidden");
+      }, 4000);
+    }
+  }
+
+  function maybePrecache() {
+    if (!("serviceWorker" in navigator) || !navigator.onLine) return;
+    navigator.serviceWorker.ready
+      .then(function (reg) {
+        var sw = navigator.serviceWorker.controller || reg.active;
+        if (sw) sw.postMessage({ type: "precache" });
+      })
+      .catch(function () {});
+  }
+
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js").catch(function () {});
+    navigator.serviceWorker.addEventListener("message", function (ev) {
+      var d = ev.data || {};
+      if (d.type === "precache-progress") {
+        // Visa bara om något faktiskt laddas ner (inte när allt redan är cachat).
+        var pct = d.total ? Math.round((d.done / d.total) * 100) : 0;
+        if (d.fetched > 0 && pct < 100) showOffline("Sparar sjökortet offline… " + pct + "%");
+      } else if (d.type === "precache-done") {
+        if (d.downloaded > 0) showOffline("Sjökortet är sparat offline ✓", true);
+      }
+    });
   }
 
   // ---------------------------------------------------------------------------

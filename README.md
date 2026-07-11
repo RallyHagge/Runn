@@ -9,6 +9,9 @@ ingen app behöver installeras.
 ## Funktioner
 
 - **Kodskydd:** kartan öppnas med en unik köpkod (se "Sälja sjökortet" nedan).
+- **Fungerar offline:** när man låst upp laddas hela sjökortet (~18 MB) ner i
+  bakgrunden via en service worker, så kartan funkar utan mobiltäckning ute på
+  sjön. Läggs sidan till på hemskärmen öppnas den som en app även utan nät.
 - Sjökortet i full upplösning (laddas som "tiles" — bara det som syns hämtas).
 - Lagerväljare uppe till höger: **Sjökort** eller **Satellit** (flygfoto).
 - Knapp nere till höger som centrerar kartan på din position och följer dig.
@@ -25,12 +28,15 @@ docs/
   index.html        # sidan
   app.js            # kartlogik (Leaflet) + GPS + upplåsning med kod
   style.css         # utseende
+  sw.js             # service worker: sparar sjökortet offline
   chart/
     tiles/          # sjökortet i KRYPTERADE rutor (.bin), z8–z16  ← genereras
     bounds.json     # kartans geografiska hörn                     ← genereras
+    tiles-manifest.json  # lista + version för offline-cachen      ← genereras
   access/
     codes.json      # inslagna nycklar, en per köpkod   ← uppdateras av mint_code.py
   icons/            # app-/favicon-ikoner                ← genereras av make_icon.py
+  img/              # blurrad bakgrund till inloggningen
   manifest.webmanifest  # gör att sidan kan läggas till på hemskärmen som app
   vendor/leaflet/   # kartbiblioteket Leaflet (medföljer)
 scripts/
@@ -78,9 +84,18 @@ och kör (byt ut `--epsg 3021` mot rätt kod om exporten bytt system):
 py -3 scripts/prepare_chart.py source/chart.png --epsg 3021 --tiles --encrypt
 ```
 
-Skriptet skriver om `docs/chart/tiles/` (krypterat) och `docs/chart/bounds.json`.
-Det tar en minut eller två och skriver ut hur många rutor som skapades.
-Redan utfärdade koder fortsätter fungera efteråt (samma huvudnyckel återanvänds).
+Skriptet skriver om `docs/chart/tiles/` (krypterat), `docs/chart/bounds.json` och
+`docs/chart/tiles-manifest.json`. Det tar en minut eller två och skriver ut hur
+många rutor som skapades.
+
+**Alla redan utfärdade koder fortsätter fungera efteråt** — samma huvudnyckel
+(`source/master.key`) återanvänds med flit, så en kartuppdatering tvingar aldrig
+fram nya koder till användarna. (Koder slutar bara gälla om du medvetet byter
+huvudnyckel, se längst ner.)
+
+Manifestet får en ny versionsstämpel vid varje körning, vilket gör att appen
+laddar om den nya kartan för offline-bruk automatiskt hos användarna. Inget i
+`docs/sw.js` behöver röras.
 
 ### 4. Publicera
 
@@ -122,7 +137,14 @@ sparas sedan i webbläsaren och fungerar på alla köparens egna enheter.
 
 Skapa flera koder samtidigt med `--count`, t.ex. `--count 20`.
 
-Alla utfärdade koder antecknas i `source/issued_codes.csv` (din privata liggare).
+### Se vilka koder som finns
+
+Öppna **`source/issued_codes.csv`** (din privata liggare) — där listas varje
+utfärdad kod i klartext med etikett, datum och anteckning.
+
+> **Obs:** `docs/access/codes.json` innehåller *inte* koderna i klartext, bara
+> krypterade ("inslagna") nycklar. Det är med flit — den filen ligger publikt på
+> webben, så koderna får inte gå att läsa där. Läs alltid koderna i CSV-liggaren.
 
 ### Spärra en kod
 
