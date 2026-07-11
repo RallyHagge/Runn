@@ -16,11 +16,22 @@
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "16";
+  var APP_VERSION = "17";
 
   var IS_IOS =
     /iphone|ipad|ipod/i.test(navigator.userAgent || "") ||
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+  // OS-namn + version ur user agent, t.ex. "iOS 26.5" eller "Android 15".
+  // Bara för tech-raden i hjälprutan — får gärna bli tom vid okänt format.
+  function osVersion() {
+    var ua = navigator.userAgent || "";
+    var m = ua.match(/(?:iPhone|iPad|CPU) OS (\d+(?:[_.]\d+)*)/i);
+    if (m) return "iOS " + m[1].replace(/_/g, ".");
+    m = ua.match(/Android (\d+(?:\.\d+)*)/i);
+    if (m) return "Android " + m[1];
+    return "";
+  }
 
   function isStandalone() {
     return (
@@ -442,8 +453,10 @@
           .getPropertyValue("--sab")
           .trim();
         var minH = document.documentElement.style.getPropertyValue("--app-min-h");
+        var os = osVersion();
         helpTech.textContent =
           "v" + APP_VERSION +
+          (os ? " · " + os : "") +
           " · helskärm " + (isStandalone() ? "ja" : "nej") +
           " · fönster " + window.innerWidth + "×" + window.innerHeight +
           (vv ? " · synligt " + Math.round(vv.width) + "×" + Math.round(vv.height) : "") +

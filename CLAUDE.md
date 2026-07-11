@@ -107,15 +107,17 @@ Senast: 2026-07-11 (kväll).
   ljusblått fält bakom klockan — exakt `#cfe3ee` = #map:s bakgrundsfärg, dvs
   iOS tycks hämta statusfältets färg från sidan (inte svart som begärt).
   Användaren vill ha kartan ända ut även upptill.
-  **v16 (deployad, väntar på användartest):** tillbaka till
-  `black-translucent` (karta under klockan) + den KLASSISKA motmedicinen mot
-  47-pt-felet: app.js lägger till `height=device-height` i viewport-taggen,
-  enbart när iOS + helskärm (vanliga webbläsare orörda). Om det fungerar ska
-  tech-raden visa **fönster 390×844** och kartan fylla hela skärmen. Kräver
-  ominstallation av hemskärms-appen (statusfälts-metan läses vid Lägg till).
-  Om v16 fallerar: fall tillbaka till v15-läget (svart statusfält, funkade)
-  och styla toppfältet snyggt i stället. **iOS-version fortfarande inte
-  inhämtad — fråga igen.**
+  **v16 FALSIFIERAD (på iOS 26.5):** `black-translucent` +
+  `height=device-height` i viewport-taggen gav toppen tillbaka (karta under
+  klockan) men remsan i botten kom tillbaka — device-height-tricket biter
+  inte längre. Telefonen kör **iOS 26.5**.
+  **v17 (deployad):** tech-raden i ?-rutan visar nu även OS-version (iOS/
+  Android, ur user agent) — användarens önskemål. Ingen layoutändring.
+  **Väntar på användarens tech-rad från v16-läget** innan nästa drag.
+  Trolig slutlösning: v15-läget (svart statusfält = botten funkar bevisat)
+  + göra toppfältet snyggt. Toppfältets färg i v15 var exakt #map:s
+  bakgrund `#cfe3ee`, så iOS tycks hämta färgen från sidan — undersök om
+  den kan styras (t.ex. via theme-color eller bakgrundsfärg i toppen).
   Tidigare falsifierat: negativ bottom med env(safe-area-inset-bottom) (v11 —
   insetet rapporteras men positioneringen utgår från den korta viewporten);
   max(innerHeight, visualViewport) (v13 — båda rapporterar 797); min-height =
