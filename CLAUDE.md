@@ -82,75 +82,37 @@ starta `py -3 -m http.server` i `docs/`, kör ett litet Playwright-skript mot
 `http://localhost:...` (secure context → WebCrypto funkar). I Chromium
 renderas allt korrekt; iOS-specifika saker (safe-area/helskärm) syns inte där.
 
+## iOS helskärm (invariants — LÖST 2026-07-12 efter v11–v20, ändra inte!)
+Testat på iPhone 390×844 med iOS 26.5. Tre saker är bärande och hänger ihop:
+1. **`apple-mobile-web-app-status-bar-style: black`** (index.html). ALDRIG
+   `black-translucent`: det är deprecated hos Apple och ger en död, oåtkomlig
+   47 pt-remsa i skärmens NEDERKANT (webbvyn görs statusfältshöjden för kort
+   men ankras i överkant; innehåll under linjen renderas aldrig).
+2. **`#map { background: #000 }`** (style.css). iOS färgar statusfältet efter
+   bakgrundsfärgen hos första elementet som fyller sidytan (= #map) — svart
+   fält smälter ihop med notchen. Inte theme-color, inte body, inte synliga
+   pixlar, inte översta elementet (1 px-list testad) — bara denna.
+3. **`.map-water`** (div, skapas i app.js som första barn i kartcontainern):
+   bär den ljusblå vattenfärgen `#cfe3ee` utanför sjökortets kant, under
+   Leaflet-panes (z 400). Utan den syns #map:s svarta bakgrund i kartan.
+Falsifierat (testa ALDRIG om): negativ bottom med env(safe-area-inset-bottom)
+(v11); max(innerHeight, visualViewport) som min-höjd (v13 — båda ljuger,
+rapporterar skärm−47); min-height = screen.height (v14 — webbvyn klipps
+fysiskt); viewport-taggen height=device-height (v16 — ignoreras numera);
+1 px-list överst för statusfältsfärgen (v19).
+Bra att veta: statusfälts-METAN läses bara när appen läggs på hemskärmen
+(ändring ⇒ användare måste ominstallera hemskärmsappen), men HTML/JS/CSS når
+appen via vanlig omstart (network-first-SW). ?-rutans tech-rad visar version
++ viewportmått; dess OS-siffra kommer ur user agent som Apple fryser (visar
+"18.7" på iOS 26.5) — Inställningar är facit. iPhone-mått: statusfält 47 pt,
+hemindikator-inset 34 pt.
+
 ## Status (uppdatera denna sektion löpande)
-Senast: 2026-07-11 (kväll).
+Senast: 2026-07-12.
 - Klart & live: karta, exakt inpassning, GPS, lagerväljare (Sjökort/Satellit,
-  Esri World Imagery), kodskydd, hjälp-ruta, app-ikon, offline, köplänk.
-- **Öppen punkt:** iOS helskärmsläge — remsa i nederkant. ORSAK DIAGNOSTISERAD
-  med v13:s diagnostik (mörk body-bakgrund + teknisk info-rad i ?-rutan):
-  användarens iPhone (390×844) rapporterade `fönster 390×797, synligt 390×797,
-  skärm 390×844, safe-botten 34px` och remsan blev MÖRK + skärmdump visar
-  kartan ända upp under klockan. Alltså: **iOS ankrar innehållet i skärmens
-  överkant men gör layout-viewporten exakt statusfältshöjden (47 pt) för
-  kort** → nedersta 47 pt blir bar sidbakgrund. Både innerHeight och
-  visualViewport ljuger; screen.height är sann.
-  **v14 FALSIFIERAD:** min-h 844px applicerades (tech-raden bekräftade) men
-  remsan bestod, och Leaflet-attributionen (kartans nederkant) försvann ur
-  bild → **iOS klipper webbvyn fysiskt vid 797 pt**; innehåll under linjen
-  renderas aldrig, iOS fyller de nedersta 47 pt med sidans bakgrundsfärg.
-  Webbvyn är alltså (skärm − statusfält) hög men placerad vid y=0 (innehållet
-  låg under klockan) — buggen är kopplad till statusfältsläget
-  `black-translucent`.
-  **v15 FUNGERADE för nederkanten:** med `apple-mobile-web-app-status-bar-
-  style: black` placeras vyn under statusfältet och kartan når skärmens
-  botten (skärmdump bekräftar, attribution synlig). MEN: överkanten fick ett
-  ljusblått fält bakom klockan — exakt `#cfe3ee` = #map:s bakgrundsfärg, dvs
-  iOS tycks hämta statusfältets färg från sidan (inte svart som begärt).
-  Användaren vill ha kartan ända ut även upptill.
-  **v16 FALSIFIERAD (på iOS 26.5):** `black-translucent` +
-  `height=device-height` i viewport-taggen gav toppen tillbaka (karta under
-  klockan) men remsan i botten kom tillbaka. Tech-raden bekräftade att
-  viewporten förblev 390×797 trots device-height — tricket biter inte
-  längre. Telefonen kör **iOS 26.5**.
-  **v17:** tech-raden i ?-rutan visar nu även OS-version (iOS/Android, ur
-  user agent). OBS: på användarens iPhone med iOS 26.5 (enligt
-  Inställningar) säger user agent "OS 18_7" — **Apple fryser versionen i
-  UA:n**, så tech-radens OS-siffra är bara ungefärlig; Inställningar är
-  facit.
-  **v18 BEKRÄFTAD för botten:** webbsökning bekräftade att
-  `black-translucent` är **deprecated hos Apple** (märkt för borttagning) →
-  ingen fix att vänta på; på iOS 26.5 får man toppen ELLER botten
-  kant-i-kant, aldrig båda. Valet: statusfältsläge `black` (=v15-läget).
-  Efter användarens ominstallation: **botten fungerar, toppen ljusblå**
-  (`#cfe3ee` = #map:s bakgrund — iOS hämtar färgen från sidans översta
-  element). Användaren tycker ljusblått uppe är fel. VIKTIGT LÄRT:
-  statusfälts-METAN kräver ominstallation, men v18-koden nådde appen via
-  vanlig omladdning (network-first-SW funkar).
-  **v19 FALSIFIERAD:** 1 px hög svart fast list överst (z 3000) tog INTE
-  över statusfältsfärgen — listen rendererades bara som en tunn svart
-  linje under det ljusblå fältet (skärmdump). Alltså: iOS läser varken
-  översta elementet, synliga pixlar (login-skärmen är mörk men fältet
-  ljusblått redan där) eller body/theme-color — sannolikt första elementet
-  som FYLLER sidytan, dvs #map. Bonusbevis: v19 nådde appen via vanlig
-  omstart, så sidinnehåll läses live (bara metataggar bakas vid install).
-  **v20 (deployad, väntar på test):** #map:s background-color är nu SVART
-  (→ statusfältet ska smälta ihop med notchen); vattenfärgen `#cfe3ee`
-  utanför kortkanten flyttad till nytt lager `.map-water` (div skapad av
-  app.js som första barn i kartcontainern, under Leaflet-panes z 400).
-  Visuellt oförändrad karta. 1 px-listen borttagen. Test: force-quit +
-  öppna igen; om fältet ändå är ljusblått → ominstallation; om ljusblått
-  även då är fältfärgen något annat och vi återställer till #cfe3ee-fält
-  (fullt acceptabelt utseende). Device-height-injektionen borttagen ur
-  app.js (v18).
-  Falsifierade spår (testa ALDRIG om): negativ bottom med env(safe-area-
-  inset-bottom) (v11); max(innerHeight, visualViewport) (v13 — båda ljuger,
-  rapporterar 797); min-height = screen.height (v14 — iOS klipper webbvyn
-  fysiskt vid 797, innehåll under linjen renderas aldrig); viewport-taggen
-  height=device-height (v16 — ignoreras på iOS 26.5).
-  Tidigare falsifierat: negativ bottom med env(safe-area-inset-bottom) (v11 —
-  insetet rapporteras men positioneringen utgår från den korta viewporten);
-  max(innerHeight, visualViewport) (v13 — båda rapporterar 797); min-height =
-  screen.height (v14 — innehåll under 797-linjen renderas aldrig).
+  Esri World Imagery), kodskydd, hjälp-ruta, app-ikon, offline, köplänk,
+  iOS helskärm (se invariants-sektionen ovan; bekräftad av användaren på
+  riktig iPhone: svart statusfält uppe, kartan ända ner i botten).
 - Två testkoder i drift (en generisk, en till Peter Eriksson). Se
   `source/issued_codes.csv` för klartext. Ta bort testkoder ur
   `docs/access/codes.json` före skarp försäljning.
