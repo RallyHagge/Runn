@@ -42,6 +42,20 @@
     return crypto.subtle.importKey("raw", rawBytes, "AES-GCM", false, ["decrypt"]);
   }
 
+  // Gör koden okänslig för bindestreck och gemener. MÅSTE matcha normalize_code()
+  // i scripts/access.py. Saknas RUNN-prefixet läggs det till.
+  function normalizeCode(s) {
+    var a = (s || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (a.indexOf("RUNN") !== 0) a = "RUNN" + a;
+    return a;
+  }
+
+  // Visar koden med automatiska bindestreck medan man skriver: RUNN-XXXX-XXXX-XXXX.
+  function formatCode(s) {
+    var a = (s || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 16);
+    return a.replace(/(.{4})/g, "$1-").replace(/-$/, "");
+  }
+
   // Försök packa upp K ur codes.json med en inskriven kod.
   function unlockWithCode(code, cfg) {
     var enc = new TextEncoder();
@@ -211,10 +225,15 @@
       });
   }
 
+  // Lägg till bindestreck automatiskt medan man skriver.
+  loginInput.addEventListener("input", function () {
+    loginInput.value = formatCode(loginInput.value);
+  });
+
   loginForm.addEventListener("submit", function (ev) {
     ev.preventDefault();
-    var code = loginInput.value.trim().toUpperCase();
-    if (!code || !accessConfig) return;
+    var code = normalizeCode(loginInput.value);
+    if (code === "RUNN" || !accessConfig) return;
     loginMsg.textContent = "";
     loginBtn.disabled = true;
     loginBtn.textContent = "Öppnar…";
@@ -236,6 +255,36 @@
         loginBtn.textContent = "Öppna kartan";
       });
   });
+
+  // --- Hjälp/info-ruta ---
+  (function setupHelp() {
+    var helpBtn = document.getElementById("help-btn");
+    var helpOverlay = document.getElementById("help");
+    var helpClose = document.getElementById("help-close");
+    var iosSteps = document.getElementById("help-ios");
+    var androidSteps = document.getElementById("help-android");
+
+    // Visa bara instruktionen för besökarens plattform (båda om okänd).
+    var ua = navigator.userAgent || "";
+    var isIOS =
+      /iphone|ipad|ipod/i.test(ua) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    var isAndroid = /android/i.test(ua);
+    if (isIOS && !isAndroid) androidSteps.style.display = "none";
+    if (isAndroid && !isIOS) iosSteps.style.display = "none";
+
+    function openHelp() {
+      helpOverlay.classList.remove("hidden");
+    }
+    function closeHelp() {
+      helpOverlay.classList.add("hidden");
+    }
+    helpBtn.addEventListener("click", openHelp);
+    helpClose.addEventListener("click", closeHelp);
+    helpOverlay.addEventListener("click", function (ev) {
+      if (ev.target === helpOverlay) closeHelp();
+    });
+  })();
 
   function boot() {
     if (!secureContextOk()) {

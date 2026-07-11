@@ -2,10 +2,18 @@
 <html lang="sv">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Sjökort Runn</title>
+<meta name="theme-color" content="#17384a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Runn">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=5">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png?v=5">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=5">
+<link rel="manifest" href="manifest.webmanifest?v=5">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 <div id="map"></div>
@@ -31,7 +39,32 @@
   </svg>
 </button>
 
+<button id="help-btn" class="help-btn" title="Information och hjälp" aria-label="Information och hjälp">?</button>
+
+<div id="help" class="help-overlay hidden">
+  <div class="help-box" role="dialog" aria-modal="true" aria-label="Information och hjälp">
+    <button id="help-close" class="help-close" aria-label="Stäng">&times;</button>
+    <h2>Sjökort Runn</h2>
+    <p class="help-meta">
+      <strong>Utgivare:</strong> Runns Båtförbund (Sjökortssektionen)<br>
+      <strong>Webbapp:</strong> Anders Hagman
+    </p>
+    <h3>Lägg till på hemskärmen</h3>
+    <p class="help-lead">Då öppnas sjökortet som en app, utan adressfält.</p>
+    <ol id="help-ios" class="help-steps">
+      <li>Tryck på <strong>Dela</strong>-knappen <span class="help-ico">&#x2191;</span> längst ner (Safari).</li>
+      <li>Välj <strong>Lägg till på hemskärmen</strong>.</li>
+      <li>Tryck <strong>Lägg till</strong> uppe till höger.</li>
+    </ol>
+    <ol id="help-android" class="help-steps">
+      <li>Tryck på <strong>menyn</strong> <span class="help-ico">&#x22ee;</span> uppe till höger (Chrome).</li>
+      <li>Välj <strong>Lägg till på startskärmen</strong>.</li>
+      <li>Bekräfta med <strong>Lägg till</strong>.</li>
+    </ol>
+  </div>
+</div>
+
 <script src="vendor/leaflet/leaflet.js"></script>
-<script src="app.js?v=4"></script>
+<script src="app.js?v=5"></script>
 </body>
 </html>

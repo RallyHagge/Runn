@@ -30,11 +30,14 @@ docs/
     bounds.json     # kartans geografiska hörn                     ← genereras
   access/
     codes.json      # inslagna nycklar, en per köpkod   ← uppdateras av mint_code.py
+  icons/            # app-/favicon-ikoner                ← genereras av make_icon.py
+  manifest.webmanifest  # gör att sidan kan läggas till på hemskärmen som app
   vendor/leaflet/   # kartbiblioteket Leaflet (medföljer)
 scripts/
   prepare_chart.py  # gör om en ny sjökortsexport till krypterade tiles + bounds.json
   mint_code.py      # skapar nya köpkoder
   access.py         # delade krypto-funktioner (används av de två ovan)
+  make_icon.py      # ritar om app-ikonen (kör bara om du vill ändra ikonen)
 source/             # HEMLIGT, checkas ej in av git. Innehåller:
   chart.png/.pgw    #   originalbilden + world-fil
   master.key        #   huvudnyckeln (se nedan – säkerhetskopiera!)

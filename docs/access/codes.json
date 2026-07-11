@@ -4,13 +4,13 @@
   "kdf": {
     "algo": "PBKDF2-HMAC-SHA256",
     "iterations": 150000,
-    "salt": "nlRKQECxf9ZBgc2bISqL7A=="
+    "salt": "DjaE+es7ImkAeWiCUhFYwg=="
   },
   "entries": [
     {
-      "iv": "28MbENlyjku6c5Vq",
-      "data": "Ii9LJeHgJPb2IRUz6/yScmQW925NyUomG+Y49j/POUXsg0RNJIiz7g9cRuqAQqqe",
-      "label": "2026-07-10 #1"
+      "iv": "hTgXtOhPWSquReJD",
+      "data": "mbXNYzPOLGlhbldteAU9iczmLhcC891swWaug+JSz+7TMl5MlidptakXRJC0s0PU",
+      "label": "2026-07-11 #1"
     }
   ]
 }

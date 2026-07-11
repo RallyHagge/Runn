@@ -15,6 +15,7 @@ codes.json). Att spärra en kod = ta bort dess rad. Se README.md.
 import base64
 import json
 import os
+import re
 from pathlib import Path
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -76,6 +77,16 @@ def save_codes(codes: dict, path: Path = CODES_PATH) -> None:
     path.write_text(json.dumps(codes, indent=2, ensure_ascii=False), encoding="utf-8")
 
 
+def normalize_code(code: str) -> str:
+    """Gör en inskriven kod okänslig för bindestreck och gemener/versaler.
+    "runn-48n9..." och "RUNN48N9..." ger samma nyckel. MÅSTE matcha
+    normalizeCode() i docs/app.js. Saknas RUNN-prefixet läggs det till."""
+    a = re.sub(r"[^A-Z0-9]", "", code.upper())
+    if not a.startswith("RUNN"):
+        a = "RUNN" + a
+    return a
+
+
 def _derive_kek(code: str, salt: bytes, iterations: int) -> bytes:
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
@@ -89,7 +100,7 @@ def _derive_kek(code: str, salt: bytes, iterations: int) -> bytes:
 def wrap_master_key(master_key: bytes, code: str, codes: dict) -> dict:
     """Slår in huvudnyckeln under en kod och returnerar en entry för codes.json."""
     salt = unb64(codes["kdf"]["salt"])
-    kek = _derive_kek(code, salt, codes["kdf"]["iterations"])
+    kek = _derive_kek(normalize_code(code), salt, codes["kdf"]["iterations"])
     iv = os.urandom(IV_BYTES)
     data = AESGCM(kek).encrypt(iv, master_key, None)
     return {"iv": b64(iv), "data": b64(data)}

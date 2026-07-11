@@ -1,0 +1,16 @@
+{
+  "name": "Sjökort Runn",
+  "short_name": "Runn",
+  "description": "Sjökort över Runn med din position — Runns Båtförbund.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#17384a",
+  "theme_color": "#17384a",
+  "icons": [
+    { "src": "icons/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "icons/icon-512.png", "type": "image/png", "sizes": "512x512" },
+    { "src": "icons/icon-512.png", "type": "image/png", "sizes": "512x512", "purpose": "maskable" }
+  ]
+}
