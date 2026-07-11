@@ -4,19 +4,6 @@
   --sab: env(safe-area-inset-bottom, 0px);
 }
 
-/* 1 px hög list allra överst — styr (förhoppningsvis) statusfältets färg i
-   iOS helskärmsläge, se kommentar i index.html. Osynlig i praktiken. */
-#statusbar-tint {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #000;
-  z-index: 3000;
-  pointer-events: none;
-}
-
 html, body {
   margin: 0;
   height: 100%;
@@ -36,11 +23,24 @@ html, body {
      (viewport-fit=cover) fyller den då hela skärmen kant till kant.
      min-height: om iOS rapporterar en för låg layout-viewport men en högre
      synlig yta (visualViewport) sätter app.js --app-min-h till den verkliga
-     höjden så att kartan dras ut ända ner. */
+     höjden så att kartan dras ut ända ner.
+     background SVART med flit: iOS i helskärmsläge färgar statusfältet
+     efter detta elements bakgrundsfärg, och svart smälter ihop med notchen.
+     Vattenfärgen som syns utanför kortkanten ligger i .map-water i stället
+     (skapas av app.js), så svart syns aldrig i själva kartan. */
   position: fixed;
   inset: 0;
   min-height: var(--app-min-h, 100%);
+  background: #000;
+}
+
+/* Vattenblått underlag inuti kartan, under Leaflets rutor och kontroller
+   (som har z-index 400+). Ersätter #map:s gamla bakgrundsfärg. */
+.map-water {
+  position: absolute;
+  inset: 0;
   background: #cfe3ee;
+  pointer-events: none;
 }
 
 /* I helskärmsläge (app från hemskärmen) ligger innehållet under iOS statusfält

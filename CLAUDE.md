@@ -126,15 +126,21 @@ Senast: 2026-07-11 (kväll).
   element). Användaren tycker ljusblått uppe är fel. VIKTIGT LÄRT:
   statusfälts-METAN kräver ominstallation, men v18-koden nådde appen via
   vanlig omladdning (network-first-SW funkar).
-  **v19 (deployad, experiment):** `#statusbar-tint` — 1 px hög svart fast
-  list allra överst (z-index 3000, pointer-events none). Hypotes: iOS tar
-  statusfältsfärgen från sidans översta element → svart fält som smälter
-  ihop med notchen. Test: räcker force-quit + öppna igen (avgör samtidigt
-  om färgen läses live eller bakas vid installation — okänt); annars
-  ominstallation. Om fältet förblir ljusblått: iOS läser sannolikt #map:s
-  background-color (eller första målningen) — nästa drag är att ge #map
-  mörk bakgrund alt. gradient (mörk topp), med trade-off att vattnet
-  utanför kortkanten byter färg. Device-height-injektionen borttagen ur
+  **v19 FALSIFIERAD:** 1 px hög svart fast list överst (z 3000) tog INTE
+  över statusfältsfärgen — listen rendererades bara som en tunn svart
+  linje under det ljusblå fältet (skärmdump). Alltså: iOS läser varken
+  översta elementet, synliga pixlar (login-skärmen är mörk men fältet
+  ljusblått redan där) eller body/theme-color — sannolikt första elementet
+  som FYLLER sidytan, dvs #map. Bonusbevis: v19 nådde appen via vanlig
+  omstart, så sidinnehåll läses live (bara metataggar bakas vid install).
+  **v20 (deployad, väntar på test):** #map:s background-color är nu SVART
+  (→ statusfältet ska smälta ihop med notchen); vattenfärgen `#cfe3ee`
+  utanför kortkanten flyttad till nytt lager `.map-water` (div skapad av
+  app.js som första barn i kartcontainern, under Leaflet-panes z 400).
+  Visuellt oförändrad karta. 1 px-listen borttagen. Test: force-quit +
+  öppna igen; om fältet ändå är ljusblått → ominstallation; om ljusblått
+  även då är fältfärgen något annat och vi återställer till #cfe3ee-fält
+  (fullt acceptabelt utseende). Device-height-injektionen borttagen ur
   app.js (v18).
   Falsifierade spår (testa ALDRIG om): negativ bottom med env(safe-area-
   inset-bottom) (v11); max(innerHeight, visualViewport) (v13 — båda ljuger,

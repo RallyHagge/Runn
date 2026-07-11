@@ -16,7 +16,7 @@
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "19";
+  var APP_VERSION = "20";
 
   var IS_IOS =
     /iphone|ipad|ipod/i.test(navigator.userAgent || "") ||
@@ -212,6 +212,17 @@
     minZoom: 2,
   });
   map.attributionControl.setPrefix("");
+
+  // Vattenfärgen som syns utanför sjökortets kant ligger i ett eget lager
+  // INUTI kartelementet (under Leaflets rutor), så att #map:s egen
+  // background-color kan vara svart — iOS färgar statusfältet i helskärms-
+  // läge efter den (se CLAUDE.md, v20). Visuellt ändras inget i kartan.
+  (function addWaterLayer() {
+    var water = document.createElement("div");
+    water.className = "map-water";
+    var mc = map.getContainer();
+    mc.insertBefore(water, mc.firstChild);
+  })();
 
   var satellite = L.tileLayer(
     "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
