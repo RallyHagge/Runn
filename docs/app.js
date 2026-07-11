@@ -22,8 +22,29 @@
   // localStorage så man slipper skriva koden varje gång. Allt sker i webbläsaren.
   // ---------------------------------------------------------------------------
 
-  var KEY_STORAGE = "runn_chart_key";
+  var STORAGE_KEY = "runn_chart_v1"; // { code, key } – kod för omvalidering, nyckel för offline
   var contentKey = null; // CryptoKey (AES-GCM) för K
+
+  function saveSession(code, rawKeyBytes) {
+    try {
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify({ code: code, key: bytesToB64(rawKeyBytes) })
+      );
+    } catch (e) {
+      /* privat läge kan neka lagring – kartan funkar ändå denna session */
+    }
+  }
+
+  function clearSession() {
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem("runn_chart_key"); // rensa ev. gammalt format
+    } catch (e) {
+      /* ignorera */
+    }
+    contentKey = null;
+  }
 
   function b64ToBytes(b64) {
     var bin = atob(b64);
@@ -196,7 +217,8 @@
   var loginBtn = loginForm.querySelector("button");
   var accessConfig = null;
 
-  function showLogin() {
+  function showLogin(message) {
+    loginMsg.textContent = message || "";
     loginEl.classList.remove("hidden");
     loginInput.focus();
   }
@@ -210,24 +232,52 @@
     return window.isSecureContext && window.crypto && crypto.subtle;
   }
 
-  // Redan upplåst tidigare? Återanvänd sparad nyckel.
-  function tryRestore() {
-    var saved = localStorage.getItem(KEY_STORAGE);
-    if (!saved) return Promise.resolve(false);
-    return importContentKey(b64ToBytes(saved))
+  // Redan upplåst tidigare? Återanvänd sparad session. Returnerar "map", "login"
+  // eller "revoked". Online kontrolleras att koden inte spärrats; offline litar vi
+  // på den cachade nyckeln så kartan funkar utan täckning.
+  function restoreSession() {
+    var saved;
+    try {
+      saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    } catch (e) {
+      saved = null;
+    }
+    if (!saved || !saved.key) return Promise.resolve("login");
+
+    return importContentKey(b64ToBytes(saved.key))
       .then(function (key) {
-        contentKey = key;
-        return true;
+        contentKey = key; // gör kartan visningsbar direkt (även offline)
+        if (!accessConfig || !saved.code) return "map"; // offline / okänd kod → lita på cache
+        // Online: verifiera att koden fortfarande finns kvar i codes.json.
+        return unlockWithCode(saved.code, accessConfig).then(function (rawKey) {
+          if (!rawKey) {
+            clearSession(); // koden borttagen/spärrad
+            return "revoked";
+          }
+          return importContentKey(rawKey).then(function (freshKey) {
+            contentKey = freshKey; // uppdatera ifall huvudnyckeln bytts
+            saveSession(saved.code, rawKey);
+            return "map";
+          });
+        });
       })
       .catch(function () {
-        localStorage.removeItem(KEY_STORAGE);
-        return false;
+        clearSession();
+        return "login";
       });
   }
 
   // Lägg till bindestreck automatiskt medan man skriver.
   loginInput.addEventListener("input", function () {
     loginInput.value = formatCode(loginInput.value);
+  });
+
+  // "Rensa och börja om" – glöm sparad session och ladda om till inloggningen.
+  document.getElementById("login-reset").addEventListener("click", function (ev) {
+    ev.preventDefault();
+    clearSession();
+    loginInput.value = "";
+    location.reload();
   });
 
   loginForm.addEventListener("submit", function (ev) {
@@ -243,7 +293,7 @@
         if (!rawKey) throw new Error("fel kod");
         return importContentKey(rawKey).then(function (key) {
           contentKey = key;
-          localStorage.setItem(KEY_STORAGE, bytesToB64(rawKey));
+          saveSession(code, rawKey);
           openMap();
         });
       })
@@ -288,9 +338,8 @@
 
   function boot() {
     if (!secureContextOk()) {
-      showLogin();
       loginBtn.disabled = true;
-      loginMsg.textContent = "Öppna sidan via https:// för att kunna låsa upp kartan.";
+      showLogin("Öppna sidan via https:// för att kunna låsa upp kartan.");
       return;
     }
     fetch("access/codes.json")
@@ -302,12 +351,14 @@
         accessConfig = cfg;
       })
       .catch(function () {
-        /* codes.json saknas – hanteras vid inloggningsförsök */
+        /* codes.json kunde inte hämtas (offline) – restoreSession litar på cache */
       })
-      .then(tryRestore)
-      .then(function (restored) {
-        if (restored) {
+      .then(restoreSession)
+      .then(function (state) {
+        if (state === "map") {
           openMap();
+        } else if (state === "revoked") {
+          showLogin("Din kod har inaktiverats. Ange en giltig kod för att fortsätta.");
         } else {
           showLogin();
         }

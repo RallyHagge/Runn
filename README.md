@@ -132,9 +132,14 @@ Alla utfärdade koder antecknas i `source/issued_codes.csv` (din privata liggare
    `label`, spara.
 3. `git add docs/access/codes.json && git commit -m "Spärra kod" && git push`.
 
-Koden slutar då fungera för nya inloggningar. (Obs: någon som redan låst upp på
-sin enhet har kvar kartan tills de rensar webbläsardata — full återkallning
-kräver ny huvudnyckel, se nedan.)
+Appen kontrollerar den sparade koden mot `codes.json` varje gång enheten är
+**online**. En spärrad kod skickar därför tillbaka användaren till
+inloggningsskärmen nästa gång de har täckning. **Offline** (t.ex. ute på sjön)
+fortsätter en redan öppnad karta att fungera på den enheten tills den är uppkopplad
+igen — det är avsiktligt, så att kartan är användbar utan mobilnät.
+
+Vill du spärra *omedelbart och för alla enheter* (även offline-cachade) krävs att
+huvudnyckeln byts, se nedan.
 
 ### VIKTIGT: huvudnyckeln `source/master.key`
 

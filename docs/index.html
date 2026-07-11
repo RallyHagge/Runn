@@ -13,20 +13,26 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=5">
 <link rel="manifest" href="manifest.webmanifest?v=5">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="style.css?v=5">
+<link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 <div id="map"></div>
 
 <div id="login" class="login">
   <form id="login-form" class="login-box" autocomplete="off">
+    <img class="login-logo" src="icons/icon-192.png?v=5" alt="" width="76" height="76">
     <h1>Sjökort Runn</h1>
-    <p>Ange din köpkod för att öppna sjökortet.</p>
+    <p>Webbaserat sjökort över Runn med din GPS-position, från Runns Båtförbund.
+       Ange din köpkod för att öppna sjökortet.</p>
     <input id="login-code" type="text" inputmode="latin" autocapitalize="characters"
            spellcheck="false" placeholder="RUNN-XXXX-XXXX-XXXX" aria-label="Köpkod">
     <button type="submit">Öppna kartan</button>
     <div id="login-msg" class="login-msg"></div>
-    <p class="login-help">Koden köps av Runns Båtförbund och fungerar på alla dina enheter.</p>
+    <p class="login-help">Koden fungerar på alla dina enheter, även utan täckning.</p>
+    <p class="login-buy">Har du ingen kod?<br>
+       <a href="https://runnsbatforbund.se/sj%C3%B6kort/" target="_blank" rel="noopener">
+       Köp sjökortet hos Runns Båtförbund</a> (300 kr via Swish).</p>
+    <a href="#" id="login-reset" class="login-reset">Problem att öppna? Rensa och börja om</a>
   </form>
 </div>
 
@@ -49,6 +55,10 @@
       <strong>Utgivare:</strong> Runns Båtförbund (Sjökortssektionen)<br>
       <strong>Webbapp:</strong> Anders Hagman
     </p>
+    <p class="help-link">
+      <a href="https://runnsbatforbund.se/sj%C3%B6kort/" target="_blank" rel="noopener">
+      Mer om sjökortet på runnsbatforbund.se</a>
+    </p>
     <h3>Lägg till på hemskärmen</h3>
     <p class="help-lead">Då öppnas sjökortet som en app, utan adressfält.</p>
     <ol id="help-ios" class="help-steps">
@@ -61,10 +71,12 @@
       <li>Välj <strong>Lägg till på startskärmen</strong>.</li>
       <li>Bekräfta med <strong>Lägg till</strong>.</li>
     </ol>
+    <p class="help-note">Kom ihåg att alltid ha med ett aktuellt <strong>tryckt</strong>
+       sjökort ombord, även om du använder det digitala.</p>
   </div>
 </div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
-<script src="app.js?v=5"></script>
+<script src="app.js?v=6"></script>
 </body>
 </html>
