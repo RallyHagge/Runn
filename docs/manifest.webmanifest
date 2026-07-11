@@ -1,6 +1,6 @@
 {
   "name": "Sjökort Runn",
-  "short_name": "Runn",
+  "short_name": "Sjökort Runn",
   "description": "Sjökort över Runn med din position — Runns Båtförbund.",
   "start_url": "./",
   "scope": "./",

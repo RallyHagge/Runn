@@ -7,13 +7,13 @@
 <meta name="theme-color" content="#17384a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Runn">
+<meta name="apple-mobile-web-app-title" content="Sjökort Runn">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=5">
 <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png?v=5">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=5">
-<link rel="manifest" href="manifest.webmanifest?v=5">
+<link rel="manifest" href="manifest.webmanifest?v=7">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 </head>
 <body>
 <div id="map"></div>
@@ -31,8 +31,7 @@
     <p class="login-help">Koden fungerar på alla dina enheter, även utan täckning.</p>
     <p class="login-buy">Har du ingen kod?<br>
        <a href="https://runnsbatforbund.se/sj%C3%B6kort/" target="_blank" rel="noopener">
-       Köp sjökortet hos Runns Båtförbund</a> (300 kr via Swish).</p>
-    <a href="#" id="login-reset" class="login-reset">Problem att öppna? Rensa och börja om</a>
+       Köp sjökortet hos Runns Båtförbund</a><br>(300 kr via Swish).</p>
   </form>
 </div>
 
@@ -62,8 +61,9 @@
     <h3>Lägg till på hemskärmen</h3>
     <p class="help-lead">Då öppnas sjökortet som en app, utan adressfält.</p>
     <ol id="help-ios" class="help-steps">
-      <li>Tryck på <strong>Dela</strong>-knappen <span class="help-ico">&#x2191;</span> längst ner (Safari).</li>
-      <li>Välj <strong>Lägg till på hemskärmen</strong>.</li>
+      <li>Tryck på <span class="help-ico">&#x22EF;</span> (tre punkter) nere till höger i Safari.</li>
+      <li>Välj <strong>Dela</strong> <span class="help-ico">&#x2191;</span>.</li>
+      <li>Välj <strong>Lägg till på hemskärmen</strong> <span class="help-ico">&#xFF0B;</span>.</li>
       <li>Tryck <strong>Lägg till</strong> uppe till höger.</li>
     </ol>
     <ol id="help-android" class="help-steps">
@@ -73,10 +73,11 @@
     </ol>
     <p class="help-note">Kom ihåg att alltid ha med ett aktuellt <strong>tryckt</strong>
        sjökort ombord, även om du använder det digitala.</p>
+    <a href="#" id="help-reset" class="help-reset">Radera aktiveringskod och börja om</a>
   </div>
 </div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>

@@ -272,8 +272,9 @@
     loginInput.value = formatCode(loginInput.value);
   });
 
-  // "Rensa och börja om" – glöm sparad session och ladda om till inloggningen.
-  document.getElementById("login-reset").addEventListener("click", function (ev) {
+  // "Radera aktiveringskod och börja om" (i hjälprutan) – glöm sparad session
+  // och ladda om till inloggningsskärmen.
+  document.getElementById("help-reset").addEventListener("click", function (ev) {
     ev.preventDefault();
     clearSession();
     loginInput.value = "";
