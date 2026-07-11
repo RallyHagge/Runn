@@ -109,15 +109,24 @@ Senast: 2026-07-11 (kväll).
   Användaren vill ha kartan ända ut även upptill.
   **v16 FALSIFIERAD (på iOS 26.5):** `black-translucent` +
   `height=device-height` i viewport-taggen gav toppen tillbaka (karta under
-  klockan) men remsan i botten kom tillbaka — device-height-tricket biter
-  inte längre. Telefonen kör **iOS 26.5**.
-  **v17 (deployad):** tech-raden i ?-rutan visar nu även OS-version (iOS/
-  Android, ur user agent) — användarens önskemål. Ingen layoutändring.
-  **Väntar på användarens tech-rad från v16-läget** innan nästa drag.
-  Trolig slutlösning: v15-läget (svart statusfält = botten funkar bevisat)
-  + göra toppfältet snyggt. Toppfältets färg i v15 var exakt #map:s
-  bakgrund `#cfe3ee`, så iOS tycks hämta färgen från sidan — undersök om
-  den kan styras (t.ex. via theme-color eller bakgrundsfärg i toppen).
+  klockan) men remsan i botten kom tillbaka. Tech-raden bekräftade att
+  viewporten förblev 390×797 trots device-height — tricket biter inte
+  längre. Telefonen kör **iOS 26.5**.
+  **v17:** tech-raden i ?-rutan visar nu även OS-version (iOS/Android, ur
+  user agent).
+  **v18 = SLUTLÖSNING (deployad, väntar på slutbekräftelse):** webbsökning
+  bekräftade att `black-translucent` är **deprecated hos Apple** (märkt för
+  borttagning) → ingen fix att vänta på; på iOS 26.5 får man toppen ELLER
+  botten kant-i-kant, aldrig båda. Valet: statusfältsläge `black` (=v15-
+  läget, bevisat perfekt nederkant). Toppfältet får empiriskt kartans
+  vattenblå `#cfe3ee` (iOS tycks hämta färgen från #map:s bakgrund) och
+  smälter in. Device-height-injektionen borttagen ur app.js. Kräver en
+  sista ominstallation av hemskärms-appen.
+  Falsifierade spår (testa ALDRIG om): negativ bottom med env(safe-area-
+  inset-bottom) (v11); max(innerHeight, visualViewport) (v13 — båda ljuger,
+  rapporterar 797); min-height = screen.height (v14 — iOS klipper webbvyn
+  fysiskt vid 797, innehåll under linjen renderas aldrig); viewport-taggen
+  height=device-height (v16 — ignoreras på iOS 26.5).
   Tidigare falsifierat: negativ bottom med env(safe-area-inset-bottom) (v11 —
   insetet rapporteras men positioneringen utgår från den korta viewporten);
   max(innerHeight, visualViewport) (v13 — båda rapporterar 797); min-height =

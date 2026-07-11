@@ -16,7 +16,7 @@
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "17";
+  var APP_VERSION = "18";
 
   var IS_IOS =
     /iphone|ipad|ipod/i.test(navigator.userAgent || "") ||
@@ -39,22 +39,6 @@
       (window.matchMedia &&
         window.matchMedia("(display-mode: standalone)").matches)
     );
-  }
-
-  // iOS helskärm + black-translucent: klassisk iOS-quirk gör layout-
-  // viewporten exakt statusfältshöjden (47 pt) för kort → tom remsa i
-  // skärmens nederkant (uppmätt: fönster 390×797 på 390×844-skärm, se
-  // CLAUDE.md). Motmedicinen är att uttryckligen begära height=device-height
-  // i viewport-taggen. Görs bara i helskärmsläge på iOS så att vanliga
-  // webbläsare (där höjden ska styras av adressfält m.m.) inte påverkas.
-  if (IS_IOS && isStandalone()) {
-    var viewportMeta = document.querySelector('meta[name="viewport"]');
-    if (viewportMeta && viewportMeta.content.indexOf("height=") === -1) {
-      viewportMeta.setAttribute(
-        "content",
-        viewportMeta.content + ", height=device-height"
-      );
-    }
   }
 
   // --- iOS helskärm: kompensera för att layout-viewporten ibland rapporteras

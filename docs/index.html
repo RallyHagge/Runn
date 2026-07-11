@@ -6,19 +6,20 @@
 <title>Sjökort Runn</title>
 <meta name="theme-color" content="#17384a">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<!-- black-translucent = kartan går ända upp under klockan. En iOS-quirk gör
-     då layout-viewporten statusfältshöjden (47 pt) för kort (tom remsa i
-     botten); motmedicinen är height=device-height i viewport-taggen, som
-     app.js lägger till enbart i helskärmsläge på iOS (se CLAUDE.md).
-     Värdet läses när appen läggs på hemskärmen - kräver ominstallation. -->
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<!-- MEDVETET VAL (testat på iOS 26.5, se CLAUDE.md): black-translucent är
+     deprecated hos Apple och gör webbvyn 47 pt för kort → död remsa i
+     skärmens NEDERKANT som inget CSS/JS-trick når (v13-v16 testade allt).
+     Med "black" placeras vyn under statusfältet och når skärmens botten;
+     statusfältet får kartans ljusblå vattenfärg och smälter in. Värdet
+     läses när appen läggs på hemskärmen - ändring kräver ominstallation. -->
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Sjökort Runn">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png?v=5">
 <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png?v=5">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=5">
 <link rel="manifest" href="manifest.webmanifest?v=7">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
 <div id="map"></div>
@@ -85,6 +86,6 @@
 </div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
-<script src="app.js?v=17"></script>
+<script src="app.js?v=18"></script>
 </body>
 </html>
