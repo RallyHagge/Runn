@@ -113,7 +113,10 @@ Senast: 2026-07-11 (kväll).
   viewporten förblev 390×797 trots device-height — tricket biter inte
   längre. Telefonen kör **iOS 26.5**.
   **v17:** tech-raden i ?-rutan visar nu även OS-version (iOS/Android, ur
-  user agent).
+  user agent). OBS: på användarens iPhone med iOS 26.5 (enligt
+  Inställningar) säger user agent "OS 18_7" — **Apple fryser versionen i
+  UA:n**, så tech-radens OS-siffra är bara ungefärlig; Inställningar är
+  facit.
   **v18 = SLUTLÖSNING (deployad, väntar på slutbekräftelse):** webbsökning
   bekräftade att `black-translucent` är **deprecated hos Apple** (märkt för
   borttagning) → ingen fix att vänta på; på iOS 26.5 får man toppen ELLER
