@@ -111,8 +111,9 @@ Bra att veta: statusfälts-METAN läses bara när appen läggs på hemskärmen
 (ändring ⇒ användare måste ominstallera hemskärmsappen), men HTML/JS/CSS når
 appen via vanlig omstart (network-first-SW). ?-rutans tech-rad visar version
 + viewportmått; dess OS-siffra kommer ur user agent som Apple fryser (visar
-"18.7" på iOS 26.5) — Inställningar är facit. iPhone-mått: statusfält 47 pt,
-hemindikator-inset 34 pt.
+"18.7" på iOS 26.5) — men webbläsarfältet ("Safari 26.5", ur `Version/`-
+tokenen) visar den RIKTIGA Safari-/iOS-versionen, läs den. iPhone-mått:
+statusfält 47 pt, hemindikator-inset 34 pt.
 
 ## Status (uppdatera denna sektion löpande)
 Senast: 2026-07-12.
