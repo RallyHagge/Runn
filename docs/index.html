@@ -19,7 +19,7 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png?v=5">
 <link rel="manifest" href="manifest.webmanifest?v=7">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="style.css?v=21">
+<link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
 <div id="map"></div>
@@ -63,6 +63,7 @@
     <button id="help-close" class="help-close" aria-label="Stäng">&times;</button>
     <h2>Sjökort Runn</h2>
     <p class="help-meta">
+      <strong>Sjökort:</strong> <span id="help-chart-edition"></span><br>
       <strong>Utgivare:</strong> Runns Båtförbund (Sjökortssektionen)<br>
       <strong>Webbapp:</strong> Anders Hagman
     </p>
@@ -86,11 +87,13 @@
     <p class="help-note">Kom ihåg att alltid ha med ett aktuellt <strong>tryckt</strong>
        sjökort ombord, även om du använder det digitala.</p>
     <p id="help-tech" class="help-tech"></p>
+    <p id="help-code" class="help-code hidden">Aktiveringskod:<br>
+       <span id="help-code-value" class="help-code-value"></span></p>
     <a href="#" id="help-reset" class="help-reset">Radera aktiveringskod och börja om</a>
   </div>
 </div>
 
 <script src="vendor/leaflet/leaflet.js"></script>
-<script src="app.js?v=21"></script>
+<script src="app.js?v=22"></script>
 </body>
 </html>

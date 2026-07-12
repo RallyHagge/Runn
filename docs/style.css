@@ -284,6 +284,30 @@ html, body {
   text-decoration: underline;
 }
 
+/* Enhetens aktiveringskod i om-rutan — så att användaren kan slå upp den på
+   en redan aktiverad enhet när fler enheter ska aktiveras. */
+.help-code {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: #333;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.help-code.hidden {
+  display: none;
+}
+
+.help-code-value {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: #17384a;
+  /* Ett tryck markerar hela koden → lätt att kopiera. */
+  -webkit-user-select: all;
+  user-select: all;
+}
+
 .help-reset {
   display: block;
   margin-top: 20px;

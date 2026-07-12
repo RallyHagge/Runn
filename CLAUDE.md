@@ -40,6 +40,7 @@ source/                   HEMLIGT, gitignore: chart.png/.pgw, master.key,
 ## Vanliga kommandon
 ```
 # Uppdatera kartan till ny utgåva (kräver source/chart.png + .pgw):
+# OBS: uppdatera även CHART_EDITION i docs/app.js (visas i attribution + ?-rutan)
 py -3 scripts/prepare_chart.py source/chart.png --epsg 3021 --tiles --encrypt
 # Skapa en köpkod:
 py -3 scripts/mint_code.py --note "namn"
@@ -119,6 +120,12 @@ Senast: 2026-07-12.
   Esri World Imagery), kodskydd, hjälp-ruta, app-ikon, offline, köplänk,
   iOS helskärm (se invariants-sektionen ovan; bekräftad av användaren på
   riktig iPhone: svart statusfält uppe, kartan ända ner i botten).
+- Om-/hjälprutan (v22): visar sjökortets utgåva (`CHART_EDITION` i app.js —
+  samma konstant som kartans attribution) samt enhetens aktiveringskod
+  strax ovanför reset-länken (användarens önskemål: så kan man slå upp sin
+  kod på en aktiverad enhet för att aktivera fler). Kodraden döljs när ingen
+  komplett kod finns sparad. Ett tryck på koden markerar hela (user-select:
+  all) för enkel kopiering.
 - Knapplayout för VÄNSTERHANDS-manövrering (v21, användarens önskemål):
   nere från vänster: Aktuell plats (x14), zooma in (x74), zooma ut (x134) —
   egna runda knappar; Leaflets zoomkontroll avstängd (`zoomControl: false`).

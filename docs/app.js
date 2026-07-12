@@ -16,7 +16,11 @@
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "21";
+  var APP_VERSION = "22";
+
+  // Sjökortets utgåva. UPPDATERA vid ny kartutgåva (prepare_chart.py).
+  // Visas både i kartans attribution och i om-/hjälprutan.
+  var CHART_EDITION = "Runn 2023 1:25000";
 
   var IS_IOS =
     /iphone|ipad|ipod/i.test(navigator.userAgent || "") ||
@@ -258,7 +262,7 @@
           maxNativeZoom: 16,
           maxZoom: 21,
           bounds: bounds,
-          attribution: "Sjökort Runn 2023 1:25000",
+          attribution: "Sjökort " + CHART_EDITION,
         }).addTo(map);
         map.fitBounds(bounds);
         map.setMaxBounds(bounds.pad(0.5));
@@ -445,8 +449,29 @@
     if (isAndroid && !IS_IOS) iosSteps.style.display = "none";
 
     var helpTech = document.getElementById("help-tech");
+    var helpCode = document.getElementById("help-code");
+    var helpCodeValue = document.getElementById("help-code-value");
+
+    // Sjökortets utgåva (statisk under sidans livstid).
+    var editionEl = document.getElementById("help-chart-edition");
+    if (editionEl) editionEl.textContent = CHART_EDITION;
 
     function openHelp() {
+      // Visa enhetens aktiveringskod så användaren kan slå upp den här för
+      // att aktivera fler enheter. Döljs om ingen komplett kod finns sparad
+      // (t.ex. privat läge där lagring nekats).
+      if (helpCode && helpCodeValue) {
+        var codeText = "";
+        try {
+          var savedRaw = localStorage.getItem(STORAGE_KEY);
+          if (savedRaw) codeText = formatCode((JSON.parse(savedRaw) || {}).code || "");
+        } catch (e) {
+          /* ingen lagring – visa inget */
+        }
+        var complete = codeText.length === 19; // RUNN-XXXX-XXXX-XXXX
+        helpCode.classList.toggle("hidden", !complete);
+        if (complete) helpCodeValue.textContent = codeText;
+      }
       // Teknisk info för felsökning (särskilt iOS-helskärmsremsan).
       if (helpTech) {
         var vv = window.visualViewport;
