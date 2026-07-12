@@ -14,7 +14,10 @@ ingen app behöver installeras.
   sjön. Läggs sidan till på hemskärmen öppnas den som en app även utan nät.
 - Sjökortet i full upplösning (laddas som "tiles" — bara det som syns hämtas).
 - Lagerväljare uppe till höger: **Sjökort** eller **Satellit** (flygfoto).
-- Knapp nere till höger som centrerar kartan på din position och följer dig.
+- Knappar nere till vänster (nåbara med ena handens tumme): centrera på din
+  position/följ dig, zooma in och zooma ut. Hjälp-knappen **?** nere till höger.
+- **?**-rutan visar bl.a. sjökortets utgåva och enhetens aktiveringskod
+  (praktiskt för support, se "Sälja sjökortet" nedan).
 - Kartan är exakt inpassad: originalet är omprojicerat till samma koordinatsystem
   som webbkartor använder (Web Mercator), så positionen stämmer i hela kartan.
 
@@ -88,6 +91,10 @@ Skriptet skriver om `docs/chart/tiles/` (krypterat), `docs/chart/bounds.json` oc
 `docs/chart/tiles-manifest.json`. Det tar en minut eller två och skriver ut hur
 många rutor som skapades.
 
+Uppdatera också utgåvetexten som visas i kartan och i **?**-rutan: öppna
+`docs/app.js` och ändra raden `var CHART_EDITION = "Runn 2023 1:25000";` till
+den nya utgåvan.
+
 **Alla redan utfärdade koder fortsätter fungera efteråt** — samma huvudnyckel
 (`source/master.key`) återanvänds med flit, så en kartuppdatering tvingar aldrig
 fram nya koder till användarna. (Koder slutar bara gälla om du medvetet byter
@@ -141,6 +148,11 @@ Skapa flera koder samtidigt med `--count`, t.ex. `--count 20`.
 
 Öppna **`source/issued_codes.csv`** (din privata liggare) — där listas varje
 utfärdad kod i klartext med etikett, datum och anteckning.
+
+**Supporttips:** en användare som glömt sin kod kan själv slå upp den — på en
+enhet där kartan redan är upplåst visas koden i **?**-rutan, strax ovanför
+"Radera aktiveringskod och börja om". Bra när samma kod ska in på fler av
+användarens enheter.
 
 > **Obs:** `docs/access/codes.json` innehåller *inte* koderna i klartext, bara
 > krypterade ("inslagna") nycklar. Det är med flit — den filen ligger publikt på

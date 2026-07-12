@@ -120,6 +120,9 @@ Senast: 2026-07-12.
   Esri World Imagery), kodskydd, hjälp-ruta, app-ikon, offline, köplänk,
   iOS helskärm (se invariants-sektionen ovan; bekräftad av användaren på
   riktig iPhone: svart statusfält uppe, kartan ända ner i botten).
+- Hemskärmsinstruktionerna i ?-rutan (v23): iOS-enheter ser bara Safari-
+  stegen, Android bara Chrome-stegen, och datorer ser inget hemskärmsavsnitt
+  alls (rubrik + ingress + listor döljs).
 - Om-/hjälprutan (v22): visar sjökortets utgåva (`CHART_EDITION` i app.js —
   samma konstant som kartans attribution) samt enhetens aktiveringskod
   strax ovanför reset-länken (användarens önskemål: så kan man slå upp sin

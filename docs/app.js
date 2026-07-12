@@ -16,7 +16,7 @@
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "22";
+  var APP_VERSION = "23";
 
   // Sjökortets utgåva. UPPDATERA vid ny kartutgåva (prepare_chart.py).
   // Visas både i kartans attribution och i om-/hjälprutan.
@@ -443,10 +443,19 @@
     var iosSteps = document.getElementById("help-ios");
     var androidSteps = document.getElementById("help-android");
 
-    // Visa bara instruktionen för besökarens plattform (båda om okänd).
-    var isAndroid = /android/i.test(navigator.userAgent || "");
-    if (IS_IOS && !isAndroid) androidSteps.style.display = "none";
-    if (isAndroid && !IS_IOS) iosSteps.style.display = "none";
+    // Visa bara hemskärmsinstruktionen för besökarens plattform. På dator
+    // (varken iOS eller Android) är den irrelevant → dölj hela avsnittet.
+    var isAndroid = !IS_IOS && /android/i.test(navigator.userAgent || "");
+    if (IS_IOS) {
+      androidSteps.style.display = "none";
+    } else if (isAndroid) {
+      iosSteps.style.display = "none";
+    } else {
+      document.getElementById("help-homescreen-title").style.display = "none";
+      document.getElementById("help-homescreen-lead").style.display = "none";
+      iosSteps.style.display = "none";
+      androidSteps.style.display = "none";
+    }
 
     var helpTech = document.getElementById("help-tech");
     var helpCode = document.getElementById("help-code");
