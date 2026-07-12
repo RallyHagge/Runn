@@ -107,9 +107,11 @@ html, body {
   background: rgba(26, 115, 60, 0.92);
 }
 
+/* Knappraden nere till vänster (vänsterhands-manövrering): Aktuell plats
+   längst ut i hörnet, därefter zooma in och zooma ut. 48 px + 12 px lucka. */
 .locate-btn {
   position: absolute;
-  right: 14px;
+  left: 14px;
   bottom: 30px;
   z-index: 1000;
   width: 48px;
@@ -123,6 +125,39 @@ html, body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.zoom-btn {
+  position: absolute;
+  bottom: 30px;
+  z-index: 1000;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #fff;
+  color: #333;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.zoom-btn:active {
+  background: #eee;
+}
+
+.zoom-in-btn {
+  left: 74px; /* 14 + 48 + 12 */
+}
+
+.zoom-out-btn {
+  left: 134px; /* 74 + 48 + 12 */
 }
 
 .locate-btn:active {
@@ -273,10 +308,11 @@ html, body {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Hjälp/info-knapp (nere till vänster) */
+/* Hjälp/info-knapp (nere till höger — används sällan, därför bort från
+   vänstertummens räckvidd) */
 .help-btn {
   position: absolute;
-  left: 14px;
+  right: 14px;
   bottom: 30px;
   z-index: 1000;
   width: 40px;
@@ -414,9 +450,8 @@ html, body {
 
 /* Håll knapparna ovanför iPhone-hemindikatorn i stående läge */
 @supports (padding: max(0px)) {
-  .locate-btn {
-    bottom: max(30px, env(safe-area-inset-bottom));
-  }
+  .locate-btn,
+  .zoom-btn,
   .help-btn {
     bottom: max(30px, env(safe-area-inset-bottom));
   }

@@ -81,6 +81,12 @@ Riktig webbläsartest via Playwright (installerat lokalt, ej i git):
 starta `py -3 -m http.server` i `docs/`, kör ett litet Playwright-skript mot
 `http://localhost:...` (secure context → WebCrypto funkar). I Chromium
 renderas allt korrekt; iOS-specifika saker (safe-area/helskärm) syns inte där.
+Kartobjektet exponeras som `window.runnMap` (testkrok, inget känsligt i det) —
+t.ex. `runnMap.getZoom()`. OBS: i en DOLD flik (t.ex. Claude Codes
+browserpanel: `document.hidden === true`, rAF körs aldrig) fullbordas inga
+ANIMERADE kartoperationer — testa med `{ animate: false }` där. Upplåsning i
+test: fyll `#login-code` med en giltig kod (source/issued_codes.csv), dispatcha
+`input` + `submit`.
 
 ## iOS helskärm (invariants — LÖST 2026-07-12 efter v11–v20, ändra inte!)
 Testat på iPhone 390×844 med iOS 26.5. Tre saker är bärande och hänger ihop:
@@ -113,6 +119,10 @@ Senast: 2026-07-12.
   Esri World Imagery), kodskydd, hjälp-ruta, app-ikon, offline, köplänk,
   iOS helskärm (se invariants-sektionen ovan; bekräftad av användaren på
   riktig iPhone: svart statusfält uppe, kartan ända ner i botten).
+- Knapplayout för VÄNSTERHANDS-manövrering (v21, användarens önskemål):
+  nere från vänster: Aktuell plats (x14), zooma in (x74), zooma ut (x134) —
+  egna runda knappar; Leaflets zoomkontroll avstängd (`zoomControl: false`).
+  Hjälp-knappen (?) nere till höger. Ändra inte utan användarens ok.
 - Två testkoder i drift (en generisk, en till Peter Eriksson). Se
   `source/issued_codes.csv` för klartext. **Användarens beslut 2026-07-12:
   koderna får ligga kvar permanent** — ta INTE bort dem ur

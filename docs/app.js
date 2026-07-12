@@ -16,7 +16,7 @@
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "20";
+  var APP_VERSION = "21";
 
   var IS_IOS =
     /iphone|ipad|ipod/i.test(navigator.userAgent || "") ||
@@ -206,12 +206,18 @@
   // ---------------------------------------------------------------------------
 
   var map = L.map("map", {
-    zoomControl: true,
+    // Egen rund zoomkontroll i knappraden nere till vänster i stället för
+    // Leaflets fyrkantiga uppe till vänster (vänsterhands-manövrering).
+    zoomControl: false,
     attributionControl: true,
     maxZoom: 21,
     minZoom: 2,
   });
   map.attributionControl.setPrefix("");
+
+  // Testkrok för browsertester (Playwright/felsökning) — kartobjektet
+  // exponerar inget känsligt (nycklar/koder ligger inte i det).
+  window.runnMap = map;
 
   // Vattenfärgen som syns utanför sjökortets kant ligger i ett eget lager
   // INUTI kartelementet (under Leaflets rutor), så att #map:s egen
@@ -578,6 +584,13 @@
     if (following && meMarker) {
       map.setView(meMarker.getLatLng(), Math.max(map.getZoom(), 16));
     }
+  });
+
+  document.getElementById("zoom-in-btn").addEventListener("click", function () {
+    map.zoomIn();
+  });
+  document.getElementById("zoom-out-btn").addEventListener("click", function () {
+    map.zoomOut();
   });
 
   map.on("dragstart", function () {
