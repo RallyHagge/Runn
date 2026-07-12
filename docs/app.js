@@ -16,7 +16,7 @@
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "23";
+  var APP_VERSION = "24";
 
   // Sjökortets utgåva. UPPDATERA vid ny kartutgåva (prepare_chart.py).
   // Visas både i kartans attribution och i om-/hjälprutan.
@@ -34,6 +34,20 @@
     if (m) return "iOS " + m[1].replace(/_/g, ".");
     m = ua.match(/Android (\d+(?:\.\d+)*)/i);
     if (m) return "Android " + m[1];
+    return "";
+  }
+
+  // Webbläsare + version ur user agent, för tech-raden. Ordningen spelar
+  // roll: Edge-UA innehåller "Chrome", Chrome-UA innehåller "Safari".
+  function browserInfo() {
+    var ua = navigator.userAgent || "";
+    var m;
+    if ((m = ua.match(/Edg(?:e|A|iOS)?\/(\d+)/))) return "Edge " + m[1];
+    if ((m = ua.match(/(?:CriOS|Chrome)\/(\d+)/))) return "Chrome " + m[1];
+    if ((m = ua.match(/(?:FxiOS|Firefox)\/(\d+)/))) return "Firefox " + m[1];
+    if ((m = ua.match(/Version\/(\d+(?:\.\d+)?)[^)]*Safari/))) return "Safari " + m[1];
+    // iOS helskärmsläge saknar både "Version/" och "Safari" i UA:n.
+    if (/AppleWebKit/.test(ua)) return IS_IOS ? "Safari" : "WebKit";
     return "";
   }
 
@@ -489,9 +503,11 @@
           .trim();
         var minH = document.documentElement.style.getPropertyValue("--app-min-h");
         var os = osVersion();
+        var browser = browserInfo();
         helpTech.textContent =
           "v" + APP_VERSION +
           (os ? " · " + os : "") +
+          (browser ? " · " + browser : "") +
           " · helskärm " + (isStandalone() ? "ja" : "nej") +
           " · fönster " + window.innerWidth + "×" + window.innerHeight +
           (vv ? " · synligt " + Math.round(vv.width) + "×" + Math.round(vv.height) : "") +

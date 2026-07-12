@@ -123,6 +123,9 @@ Senast: 2026-07-12.
 - Hemskärmsinstruktionerna i ?-rutan (v23): iOS-enheter ser bara Safari-
   stegen, Android bara Chrome-stegen, och datorer ser inget hemskärmsavsnitt
   alls (rubrik + ingress + listor döljs).
+- Tech-raden i ?-rutan (v24): ligger allra sist i rutan (efter reset-länken)
+  och visar även webbläsare + version (Safari/Chrome/Firefox/Edge ur user
+  agent; i iOS helskärm saknar UA:n webbläsarnamn → visar "Safari").
 - Om-/hjälprutan (v22): visar sjökortets utgåva (`CHART_EDITION` i app.js —
   samma konstant som kartans attribution) samt enhetens aktiveringskod
   strax ovanför reset-länken (användarens önskemål: så kan man slå upp sin
