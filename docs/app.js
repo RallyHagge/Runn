@@ -10,13 +10,17 @@
     statusEl.classList.toggle("error", !!isError);
   }
 
+  // Banderollen kan avfärdas med ett tryck (felmeddelanden ligger annars
+  // kvar tills positionen lyckas).
+  statusEl.addEventListener("click", hideStatus);
+
   function hideStatus() {
     statusEl.classList.add("hidden");
   }
 
   // Hålls i synk med ?v=N i index.html. Visas i hjälprutans tekniska info så
   // att man kan se vilken version en enhet faktiskt kör (cache-felsökning).
-  var APP_VERSION = "24";
+  var APP_VERSION = "25";
 
   // Sjökortets utgåva. UPPDATERA vid ny kartutgåva (prepare_chart.py).
   // Visas både i kartans attribution och i om-/hjälprutan.
@@ -279,7 +283,9 @@
           attribution: "Sjökort " + CHART_EDITION,
         }).addTo(map);
         map.fitBounds(bounds);
-        map.setMaxBounds(bounds.pad(0.5));
+        // Ingen setMaxBounds: kartan ska gå att panorera vart som helst
+        // (satellitlagret är världstäckande och följ-läget ska fungera var
+        // man än befinner sig). Startvyn är ändå centrerad över sjökortet.
 
         L.control
           .layers({ Sjökort: chart, Satellit: satellite }, {}, { collapsed: false })
@@ -594,11 +600,36 @@
     }
   }
 
+  // Steg-för-steg-hjälp när platsåtkomst nekats. En webbsida FÅR INTE öppna
+  // telefonens inställningar via länk (app-settings: m.fl. är spärrade för
+  // webbinnehåll — bara riktiga appar kan) — så tydliga instruktioner per
+  // plattform är det bästa som går att göra.
+  function locationDeniedHelp() {
+    var isAndroid = !IS_IOS && /android/i.test(navigator.userAgent || "");
+    if (IS_IOS && isStandalone()) {
+      return "Platsåtkomst nekad. Gör så här:\n" +
+        "Öppna Inställningar → Integritet & säkerhet → Platstjänster → " +
+        "Safari-webbplatser → Vid användning. Öppna sedan appen igen.";
+    }
+    if (IS_IOS) {
+      return "Platsåtkomst nekad. Gör så här:\n" +
+        "Tryck på aA i adressfältet → Webbplatsinställningar → Plats → " +
+        "Tillåt. Ladda sedan om sidan.";
+    }
+    if (isAndroid) {
+      return "Platsåtkomst nekad. Gör så här:\n" +
+        "Tryck på hänglåset vid adressen → Behörigheter → Plats → Tillåt. " +
+        "Ladda sedan om sidan.";
+    }
+    return "Platsåtkomst nekad. Tillåt plats för den här sidan via ikonen " +
+      "vid webbläsarens adressfält och ladda om sidan.";
+  }
+
   function onPositionError(err) {
     var msg;
     switch (err.code) {
       case err.PERMISSION_DENIED:
-        msg = "Platsåtkomst nekad. Tillåt plats i webbläsarens inställningar för att se din position.";
+        msg = locationDeniedHelp();
         break;
       case err.POSITION_UNAVAILABLE:
         msg = "Positionen är inte tillgänglig just nu.";

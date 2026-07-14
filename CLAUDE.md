@@ -124,6 +124,16 @@ Senast: 2026-07-12.
 - Hemskärmsinstruktionerna i ?-rutan (v23): iOS-enheter ser bara Safari-
   stegen, Android bara Chrome-stegen, och datorer ser inget hemskärmsavsnitt
   alls (rubrik + ingress + listor döljs).
+- Platsåtkomst nekad (v25): banderollen visar steg-för-steg-instruktioner
+  anpassade efter plattform (iOS hemskärmsapp/iOS Safari/Android/dator) och
+  avfärdas med ett tryck. OBS: en DIREKTLÄNK till telefonens inställningar
+  är omöjlig från webbinnehåll (app-settings: m.fl. är spärrade av Apple/
+  Google — bara riktiga appar kan) — förklarat för användaren 2026-07-14.
+- Kartan har ingen yttre panoreringsgräns (v25, användarens önskemål):
+  setMaxBounds borttagen så att följ-läget och satellitlagret fungerar var
+  som helst i världen. Startvyn är fortfarande fitBounds över sjökortet.
+- Kodraden i ?-rutan (v25): texten lyder "Din personliga aktiveringskod. /
+  Dela den aldrig med andra." följt av koden.
 - Tech-raden i ?-rutan (v24): ligger allra sist i rutan (efter reset-länken)
   och visar även webbläsare + version (Safari/Chrome/Firefox/Edge ur user
   agent; i iOS helskärm saknar UA:n webbläsarnamn → visar "Safari").
