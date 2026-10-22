@@ -157,7 +157,9 @@ Senast: 2026-07-12.
   soundboard på https://rallyhagge.github.io/Runn/halloween/. Spelar 8 ljud
   som hotlänkas från myinstants (`SOUNDS`-listan, fältet `mp3` = direkt-
   adress `…/media/sounds/….mp3`, hämtad ur sidans `og:audio`-meta; tomt =
-  knappen visar "Ljudfil saknas"). Alla 8 ifyllda och verifierade.
+  knappen visar "Ljudfil saknas"; `group` = rubrik). 26 ljud (2026-10-22):
+  användarens 8 favoriter + 18 klassiker (Wilhelmskriket, filmskurkar, teman).
+  Nya ljud hittas via myinstants sökning (`/en/search/?name=…`).
   Delar inga filer med kartappen. Ligger inom sjökortets service worker-
   scope (network-first, ofarligt). Tas bort före överlämningen till
   föreningen.

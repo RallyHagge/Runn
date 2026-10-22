@@ -63,6 +63,15 @@ details {
 summary { cursor: pointer; font-weight: 500; }
 details ol { margin: 10px 0 2px; padding-left: 1.3em; display: grid; gap: 6px; color: var(--fog); }
 details b { color: var(--bone); font-weight: 500; }
+section { display: flex; flex-direction: column; gap: 12px; }
+h2 {
+  margin: 0;
+  font-size: .78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color: var(--fog);
+}
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
 .tile {
   appearance: none;
@@ -142,7 +151,7 @@ details b { color: var(--bone); font-weight: 500; }
     </ol>
   </details>
 
-  <div class="grid" id="grid"></div>
+  <div id="board" style="display:flex;flex-direction:column;gap:28px"></div>
 </div>
 
 <div class="bar-bottom">
@@ -155,20 +164,55 @@ details b { color: var(--bone); font-weight: 500; }
 <script>
 // Ljuden spelas direkt från myinstants. "mp3" är filens adress
 // (https://www.myinstants.com/media/sounds/....mp3), "page" ljudets sida där.
+// "group" styr vilken rubrik knappen hamnar under (i listans ordning).
 var SOUNDS = [
-  { name: "Halloween", sub: "Temat", page: "https://www.myinstants.com/en/instant/halloween-3-71414/", mp3: "https://www.myinstants.com/media/sounds/diamondmp3_AR0V2pv.mp3" },
-  { name: "Michael Myers", sub: "Evil inside", page: "https://www.myinstants.com/en/instant/dbd-ost-michael-myers-sound-end-evil-inside-3-33082/", mp3: "https://www.myinstants.com/media/sounds/dbd-ost-michael-myers-sounds-fin-mal-interieur-3_geQnBkX.mp3" },
-  { name: "Klockan slår", sub: "Halloween clock", page: "https://www.myinstants.com/en/instant/halloween-clock-58003/", mp3: "https://www.myinstants.com/media/sounds/halloween-clock.mp3" },
-  { name: "Andning", sub: "Nightmare harvester", page: "https://www.myinstants.com/en/instant/nightmare-harvester-breathing-52347/", mp3: "https://www.myinstants.com/media/sounds/nightmare-harvester-breathing.mp3" },
-  { name: "I see you", sub: "Viskning", page: "https://www.myinstants.com/en/instant/i-see-yos-19182/", mp3: "https://www.myinstants.com/media/sounds/i-see-yos.mp3" },
-  { name: "Clicker", sub: "The Last of Us", page: "https://www.myinstants.com/en/instant/last-of-us-clicker-sound-10817/", mp3: "https://www.myinstants.com/media/sounds/the-last-of-us-clicker-sound-dlive.mp3" },
-  { name: "Ondskefullt skratt", sub: "Michael Jackson", page: "https://www.myinstants.com/en/instant/michael-jackson-evil-laugh-34261/", mp3: "https://www.myinstants.com/media/sounds/michael-jackson-evil-laugh.mp3" },
-  { name: "Knackning", sub: "Någon vid dörren", page: "https://www.myinstants.com/en/instant/door-knock-spooky-53100/", mp3: "https://www.myinstants.com/media/sounds/5_door-knock.mp3" }
+  // Favoriter
+  { group: "Favoriter", name: "Halloween", sub: "Temat", page: "https://www.myinstants.com/en/instant/halloween-3-71414/", mp3: "https://www.myinstants.com/media/sounds/diamondmp3_AR0V2pv.mp3" },
+  { group: "Favoriter", name: "Michael Myers", sub: "Evil inside", page: "https://www.myinstants.com/en/instant/dbd-ost-michael-myers-sound-end-evil-inside-3-33082/", mp3: "https://www.myinstants.com/media/sounds/dbd-ost-michael-myers-sounds-fin-mal-interieur-3_geQnBkX.mp3" },
+  { group: "Favoriter", name: "Klockan slår", sub: "Halloween clock", page: "https://www.myinstants.com/en/instant/halloween-clock-58003/", mp3: "https://www.myinstants.com/media/sounds/halloween-clock.mp3" },
+  { group: "Favoriter", name: "Andning", sub: "Nightmare harvester", page: "https://www.myinstants.com/en/instant/nightmare-harvester-breathing-52347/", mp3: "https://www.myinstants.com/media/sounds/nightmare-harvester-breathing.mp3" },
+  { group: "Favoriter", name: "I see you", sub: "Viskning", page: "https://www.myinstants.com/en/instant/i-see-yos-19182/", mp3: "https://www.myinstants.com/media/sounds/i-see-yos.mp3" },
+  { group: "Favoriter", name: "Clicker", sub: "The Last of Us", page: "https://www.myinstants.com/en/instant/last-of-us-clicker-sound-10817/", mp3: "https://www.myinstants.com/media/sounds/the-last-of-us-clicker-sound-dlive.mp3" },
+  { group: "Favoriter", name: "Ondskefullt skratt", sub: "Michael Jackson", page: "https://www.myinstants.com/en/instant/michael-jackson-evil-laugh-34261/", mp3: "https://www.myinstants.com/media/sounds/michael-jackson-evil-laugh.mp3" },
+  { group: "Favoriter", name: "Knackning", sub: "Någon vid dörren", page: "https://www.myinstants.com/en/instant/door-knock-spooky-53100/", mp3: "https://www.myinstants.com/media/sounds/5_door-knock.mp3" },
+  // Fler klassiker
+  { group: "Skrik och skratt", name: "Wilhelmskriket", sub: "Filmklassikern", mp3: "https://www.myinstants.com/media/sounds/wilhelmscream.mp3" },
+  { group: "Skrik och skratt", name: "Exorcisten", sub: "Skrik", mp3: "https://www.myinstants.com/media/sounds/exorcist-scary-scream.mp3" },
+  { group: "Skrik och skratt", name: "Psycho", sub: "Duschscenen", mp3: "https://www.myinstants.com/media/sounds/psycho-violin_ZWORQX6.mp3" },
+  { group: "Skrik och skratt", name: "Jumpscare", sub: "Five Nights at Freddy's", mp3: "https://www.myinstants.com/media/sounds/five-nights-at-freddys-full-scream-sound_2.mp3" },
+  { group: "Skrik och skratt", name: "Häxskratt", sub: "Kacklande", mp3: "https://www.myinstants.com/media/sounds/witch02.mp3" },
+  { group: "Skrik och skratt", name: "Vincent Price", sub: "Thriller-skrattet · 14 s", mp3: "https://www.myinstants.com/media/sounds/vincent_price_laugh.mp3" },
+  { group: "Filmskurkar", name: "Here's Johnny!", sub: "The Shining", mp3: "https://www.myinstants.com/media/sounds/heres-johnny_1.mp3" },
+  { group: "Filmskurkar", name: "Freddy Krueger", sub: "One, two… · 17 s", mp3: "https://www.myinstants.com/media/sounds/freddy-krueger-1-2.mp3" },
+  { group: "Filmskurkar", name: "Chucky", sub: "Skrattar", mp3: "https://www.myinstants.com/media/sounds/chucky-laugh.mp3" },
+  { group: "Filmskurkar", name: "Pennywise", sub: "Det – skrattar", mp3: "https://www.myinstants.com/media/sounds/eddie-cayer-it-2017-pennywise-laugh.mp3" },
+  { group: "Filmskurkar", name: "Ghostface", sub: "Hello, Sidney", mp3: "https://www.myinstants.com/media/sounds/ghostface-hello-sidney.mp3" },
+  { group: "Filmskurkar", name: "Jason", sub: "Fredagen den 13:e", mp3: "https://www.myinstants.com/media/sounds/friday_the_13th_sound_effect_test_chchch_ahahah_ki_ki_ki_ma_ma_malistenvid.mp3" },
+  { group: "Musik", name: "Halloween-temat", sub: "John Carpenter · 43 s", mp3: "https://www.myinstants.com/media/sounds/halloween.mp3" },
+  { group: "Musik", name: "Exorcisten-temat", sub: "Tubular Bells · 49 s", mp3: "https://www.myinstants.com/media/sounds/the-exorcist.mp3" },
+  { group: "Musik", name: "Hajen", sub: "Dun-dun · 32 s", mp3: "https://www.myinstants.com/media/sounds/jaws-theme_TDORPKA.mp3" },
+  { group: "Musik", name: "Arkiv X", sub: "Vinjetten", mp3: "https://www.myinstants.com/media/sounds/x-files-theme-short-version.mp3" },
+  { group: "Musik", name: "Speldosa", sub: "Läskig melodi", mp3: "https://www.myinstants.com/media/sounds/what-child-is-this.mp3" },
+  { group: "Musik", name: "Insidious", sub: "Skräckfioler · 11 s", mp3: "https://www.myinstants.com/media/sounds/insidious-scary-violin.mp3" }
 ];
 
 (function () {
-  var grid = document.getElementById("grid");
+  var board = document.getElementById("board");
+  var grids = {};
   var players = [];
+
+  function gridFor(name) {
+    if (grids[name]) return grids[name];
+    var sec = document.createElement("section");
+    var h = document.createElement("h2");
+    h.textContent = name;
+    var g = document.createElement("div");
+    g.className = "grid";
+    sec.appendChild(h);
+    sec.appendChild(g);
+    board.appendChild(sec);
+    return (grids[name] = g);
+  }
 
   SOUNDS.forEach(function (s) {
     var btn = document.createElement("button");
@@ -179,7 +223,7 @@ var SOUNDS = [
     btn.querySelector(".name").textContent = s.name;
     var desc = btn.querySelector(".desc");
     desc.textContent = s.sub;
-    grid.appendChild(btn);
+    gridFor(s.group).appendChild(btn);
 
     if (!s.mp3) {
       btn.disabled = true;
