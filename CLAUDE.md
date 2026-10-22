@@ -152,6 +152,14 @@ Senast: 2026-07-12.
   koderna får ligga kvar permanent** — ta INTE bort dem ur
   `docs/access/codes.json`.
 - Mail till Peter Eriksson är skickat (2026-07-11).
+- Sidoprojekt (2026-10-22, användarens eget, INTE en del av sjökortet):
+  `docs/halloween/index.html` = "Spökljud", en fristående Halloween-
+  soundboard på https://rallyhagge.github.io/Runn/halloween/. Spelar 8 ljud
+  som hotlänkas från myinstants (`SOUNDS`-listan, fältet `mp3` = direkt-
+  adress `…/media/sounds/….mp3`; tomt = knappen visar "Ljudfil saknas").
+  Delar inga filer med kartappen. Ligger inom sjökortets service worker-
+  scope (network-first, ofarligt). Tas bort före överlämningen till
+  föreningen.
 
 <!-- Skriv ALDRIG köpkoder i klartext här (filen är publik i repot). -->
 
