@@ -156,7 +156,8 @@ Senast: 2026-07-12.
   `docs/halloween/index.html` = "Spökljud", en fristående Halloween-
   soundboard på https://rallyhagge.github.io/Runn/halloween/. Spelar 8 ljud
   som hotlänkas från myinstants (`SOUNDS`-listan, fältet `mp3` = direkt-
-  adress `…/media/sounds/….mp3`; tomt = knappen visar "Ljudfil saknas").
+  adress `…/media/sounds/….mp3`, hämtad ur sidans `og:audio`-meta; tomt =
+  knappen visar "Ljudfil saknas"). Alla 8 ifyllda och verifierade.
   Delar inga filer med kartappen. Ligger inom sjökortets service worker-
   scope (network-first, ofarligt). Tas bort före överlämningen till
   föreningen.
